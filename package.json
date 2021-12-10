@@ -1,0 +1,27 @@
+{
+  "name": "office-chart",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "ts-node './lib/xlsx/test/xmlTool2.test.ts"
+  },
+  "dependencies": {
+    "jszip": "^3.7.1",
+    "xml2js": "^0.4.23",
+    "fs": "^0.0.1-security",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.3"
+  },
+  "devDependencies": {
+    "@types/jszip": "^3.4.1",
+    "@types/xml2js": "^0.4.9",
+    "@types/jest": "^27.0.3",
+    "jest": "^27.4.4",
+    "ts-jest": "^27.1.1",
+    "@types/node": "^16.11.12"
+  },
+  "author": "",
+  "license": "ISC"
+}
