@@ -82,7 +82,7 @@ export class XmlTool {
         return count;
     }
 
-    public createSheet = async (name: string, id: string) => {
+    public createSheet = async (id: string) => {
         const resSheet = await this.readXml('xl/worksheets/sheet1.xml');
 
         delete resSheet.worksheet.drawing
@@ -94,12 +94,12 @@ export class XmlTool {
                 Id: 'rId' + id,
                 Type:
                     'http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet',
-                Target: `worksheets/${name}.xml`
+                Target: `worksheets/sheet${id}.xml`
             }
         })
 
 
-        this.write(`xl/worksheets/${name}.xml`, resSheet);
+        this.write(`xl/worksheets/sheet${id}.xml`, resSheet);
         this.write('xl/_rels/workbook.xml.rels', WbRel);
         return resSheet;
     }
@@ -127,7 +127,7 @@ export class XmlTool {
         return this.write('xl/workbook.xml', wb);
     }
 
-    public writeTable = async (sheet: any, name: string, data: any[][]) => {
+    public writeTable = async (sheet: any, data: any[][], id: string) => {
         var rows: any = [{
             $: {
                 r: 1,
@@ -167,29 +167,29 @@ export class XmlTool {
         });
         sheet.worksheet.sheetData = { row: rows };
 
-        return this.write(`xl/worksheets/${name}.xml`, sheet);
+        return this.write(`xl/worksheets/sheet${id}.xml`, sheet);
     }
 
-    public addChart = async (sheet: any, sheetName: string, title: string, data: any[][], range: string) => {
+    public addChart = async (sheet: any, sheetName: string, title: string, data: any[][], range: string, id: string) => {
         // let path = __dirname + "/templates/charts/chart1.xml";
         const readChart = await this.readXml('xl/charts/chart1.xml');
         // console.log(readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']);
         readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = title;
         readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:cat']['c:strRef']['c:f'] = sheetName + '!$A$1:$A$3';
         readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:val']['c:numRef']['c:f'] = sheetName + '!$B$1:$B$3';
-        const id = await this.addDrawingRel(sheet, sheetName);
-        await this.addChartToDraw(sheetName, id);
-        await this.addChartToSheet(sheetName, sheet, id);
-        await this.addChartToSheetRel(sheetName, id);
+        await this.addDrawingRel(sheet, sheetName, id);
+        await this.addChartToDraw(id);
+        await this.addChartToSheet(sheet, id);
+        await this.addChartToSheetRel(id);
         //might not work because file name
-        return this.write(`xl/charts/chart${sheetName}.xml`, readChart);
+        return this.write(`xl/charts/chart${id}.xml`, readChart);
     }
 
-    private addDrawingRel = async (sheet, sheetName: string) => {
+    private addDrawingRel = async (sheet, sheetName: string, id: string) => {
         const drawRel = await this.readXml('xl/drawings/_rels/drawing2.xml.rels'); //add new chart rel
         // console.log(drawRel.Relationships.Relationship);
 
-        let id = 2
+        // let id = 2
         // if (!Array.isArray(drawRel.Relationships.Relationship)) {
         drawRel.Relationships.Relationship =
         // { '$': drawRel.Relationships.Relationship.$ },
@@ -198,7 +198,7 @@ export class XmlTool {
                 Id: 'rId' + id,
                 Type:
                     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart",
-                Target: `../charts/chart${sheetName}.xml`
+                Target: `../charts/chart${id}.xml`
             }
         }
 
@@ -217,21 +217,21 @@ export class XmlTool {
 
         // }
 
-        await this.write(`xl/drawings/_rels/drawing${sheetName}.xml.rels`, drawRel);
+        await this.write(`xl/drawings/_rels/drawing${id}.xml.rels`, drawRel);
         return id;
 
         //add to sheet relationships as drawing
         //add to sheet as drawing;
     }
 
-    private addChartToDraw = async (sheetName, id) => {
+    private addChartToDraw = async (id) => {
         const draw = await this.readXml('xl/drawings/drawing2.xml'); // add new chart draw
         // console.log(draw['xdr:wsDr']['xdr:oneCellAnchor']['xdr:graphicFrame']['a:graphic']['a:graphicData']['c:chart'].$['r:id']);
         draw['xdr:wsDr']['xdr:oneCellAnchor']['xdr:graphicFrame']['a:graphic']['a:graphicData']['c:chart'].$['r:id'] = 'rId' + id;
-        return this.write(`xl/drawings/chart${sheetName}.xml`, draw);
+        return this.write(`xl/drawings/chart${id}.xml`, draw);
     }
 
-    private addChartToSheetRel = async (sheetName, id) => {
+    private addChartToSheetRel = async (id: string) => {
         const draw = await this.readXml('xl/worksheets/_rels/sheet2.xml.rels'); // add new chart to sheet rel
         // console.log(draw['xdr:wsDr']['xdr:oneCellAnchor']['xdr:graphicFrame']['a:graphic']['a:graphicData']['c:chart'].$['r:id']);
         console.log(draw['Relationships']['Relationship'])
@@ -242,20 +242,20 @@ export class XmlTool {
                 Id: 'rId' + id,
                 Type:
                     'http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing',
-                Target: `../drawings/chart${sheetName}.xml`
+                Target: `../drawings/chart${id}.xml`
             }
         }
         // draw['xdr:wsDr']['xdr:oneCellAnchor']['xdr:graphicFrame']['a:graphic']['a:graphicData']['c:chart'].$['r:id'] = 'rId' + id;
-        return this.write(`xl/worksheets/_rels/${sheetName}.xml.rels`, draw);
+        return this.write(`xl/worksheets/_rels/sheet${id}.xml.rels`, draw);
     }
 
-    private addChartToSheet = async (sheetName, sheet, id) => {
+    private addChartToSheet = async (sheet, id: string) => {
         sheet['worksheet']['drawing'] = {
             $: {
                 'r:id': "rId" + id
             }
         };
-        return this.write(`xl/worksheets/${sheetName}.xml`, sheet);
+        return this.write(`xl/worksheets/sheet${id}.xml`, sheet);
     }
 
     public getColName = (n: number) => {
