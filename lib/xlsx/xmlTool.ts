@@ -8,7 +8,7 @@ export class XmlTool {
     private parser: xml2js.Parser;
     private chartZip: JSZip;
     private builder: xml2js.Builder;
-    
+
     constructor() {
         this.zip = new JSZip();
         this.chartZip = new JSZip();
@@ -17,7 +17,7 @@ export class XmlTool {
     }
 
     public readXlsx = async (fileName?: string) => {
-        let path =  __dirname + "/templates/template.xlsx";
+        let path = __dirname + "/templates/template.xlsx";
 
         await new Promise((resolve, reject) => fs.readFile(path, async (err, data) => {
             if (err) {
@@ -83,7 +83,7 @@ export class XmlTool {
     }
 
     public createSheet = async (name: string, id: string) => {
-        const resSheet = await this.readXml('xl/worksheets/SheetTemplate.xml');
+        const resSheet = await this.readXml('xl/worksheets/sheet1.xml');
 
         delete resSheet.worksheet.drawing
 
@@ -117,6 +117,16 @@ export class XmlTool {
         fs.writeFileSync(name + '.xlsx', buf);
     }
 
+    public removeTemplateSheets = async () => {
+        const wb = await this.readXml('xl/workbook.xml');
+
+        wb.workbook.sheets.sheet = wb.workbook.sheets.sheet.filter(it => {
+            return 'SheetTemplate' !== it.$.name.toString() && 'ChartTemplate' !== it.$.name.toString();
+        })
+
+        return this.write('xl/workbook.xml', wb);
+    }
+
     public writeTable = async (sheet: any, name: string, data: any[][]) => {
         var rows: any = [{
             $: {
@@ -126,7 +136,7 @@ export class XmlTool {
             c: data[0].map((t, x) => {
                 return {
                     $: {
-                        r: this.getColName(x + 1) + 1,
+                        r: this.getColName(x) + 1,
                         // t: "s"
                     },
                     v: t.toString()
@@ -147,7 +157,7 @@ export class XmlTool {
             f.forEach((t, x) => {
                 c.push({
                     $: {
-                        r: this.getColName(x + 1) + (y + 2),
+                        r: this.getColName(x) + (y + 2),
                     },
                     v: t.toString()
                 });
@@ -156,40 +166,101 @@ export class XmlTool {
             rows.push(r);
         });
         sheet.worksheet.sheetData = { row: rows };
-        console.log(sheet)
+
         return this.write(`xl/worksheets/${name}.xml`, sheet);
     }
 
-    public addChart = async (sheet: any, name: string, data: any[][], range: string) => {
+    public addChart = async (sheet: any, sheetName: string, title: string, data: any[][], range: string) => {
         // let path = __dirname + "/templates/charts/chart1.xml";
-        // const read = this.readXml(path);
-        // const chartTemplate = await new Promise((resolve, reject) => fs.readFile(path, 'utf8', async (err, data) => {
-        //     if (err) {
-        //         console.error(`Template ${path} not read: ${err}`);
-        //         reject(err);
-        //         return;
-        //     };
-        //     console.log(data)
-        //     return this.parser.parseStringPromise(data);
-        //     // return await this.chartZip.loadAsync(data).then(d => {
-        //     //     console.log(d)
-        //     //     resolve(d);
-        //     // })
-        // }));
-
-        // console.log(read)
-        // console.log(JSON.parse(await this.parser.parseStringPromise(chartTemplate)));
-        // const chartTemplate = this.readXml(__dirname + "/templates/charts/chart1.xml");
+        const readChart = await this.readXml('xl/charts/chart1.xml');
+        // console.log(readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']);
+        readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = title;
+        readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:cat']['c:strRef']['c:f'] = sheetName + '!$A$1:$A$3';
+        readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:val']['c:numRef']['c:f'] = sheetName + '!$B$1:$B$3';
+        const id = await this.addDrawingRel(sheet, sheetName);
+        await this.addChartToDraw(sheetName, id);
+        await this.addChartToSheet(sheetName, sheet, id);
+        await this.addChartToSheetRel(sheetName, id);
+        //might not work because file name
+        return this.write(`xl/charts/chart${sheetName}.xml`, readChart);
     }
 
-    public getColName = (n) => {
-        var abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        n--;
-        if (n < 26) {
-            return abc[n];
-        } else {
-            return abc[(n / 26 - 1) | 0] + abc[n % 26];
+    private addDrawingRel = async (sheet, sheetName: string) => {
+        const drawRel = await this.readXml('xl/drawings/_rels/drawing2.xml.rels'); //add new chart rel
+        // console.log(drawRel.Relationships.Relationship);
+
+        let id = 2
+        // if (!Array.isArray(drawRel.Relationships.Relationship)) {
+        drawRel.Relationships.Relationship =
+        // { '$': drawRel.Relationships.Relationship.$ },
+        {
+            '$': {
+                Id: 'rId' + id,
+                Type:
+                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart",
+                Target: `../charts/chart${sheetName}.xml`
+            }
         }
+
+
+        // } else {
+        //     id = drawRel.Relationships.Relationship.length;
+        //     drawRel.Relationships.Relationship.push({
+        //         '$':
+        //         {
+        //             Id: 'rId' + id,
+        //             Type:
+        //                 "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart",
+        //             Target: `../charts/chart${sheetName}.xml`
+        //         }
+        //     })
+
+        // }
+
+        await this.write(`xl/drawings/_rels/drawing${sheetName}.xml.rels`, drawRel);
+        return id;
+
+        //add to sheet relationships as drawing
+        //add to sheet as drawing;
+    }
+
+    private addChartToDraw = async (sheetName, id) => {
+        const draw = await this.readXml('xl/drawings/drawing2.xml'); // add new chart draw
+        // console.log(draw['xdr:wsDr']['xdr:oneCellAnchor']['xdr:graphicFrame']['a:graphic']['a:graphicData']['c:chart'].$['r:id']);
+        draw['xdr:wsDr']['xdr:oneCellAnchor']['xdr:graphicFrame']['a:graphic']['a:graphicData']['c:chart'].$['r:id'] = 'rId' + id;
+        return this.write(`xl/drawings/chart${sheetName}.xml`, draw);
+    }
+
+    private addChartToSheetRel = async (sheetName, id) => {
+        const draw = await this.readXml('xl/worksheets/_rels/sheet2.xml.rels'); // add new chart to sheet rel
+        // console.log(draw['xdr:wsDr']['xdr:oneCellAnchor']['xdr:graphicFrame']['a:graphic']['a:graphicData']['c:chart'].$['r:id']);
+        console.log(draw['Relationships']['Relationship'])
+        draw['Relationships']['Relationship'] =
+        {
+            '$':
+            {
+                Id: 'rId' + id,
+                Type:
+                    'http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing',
+                Target: `../drawings/chart${sheetName}.xml`
+            }
+        }
+        // draw['xdr:wsDr']['xdr:oneCellAnchor']['xdr:graphicFrame']['a:graphic']['a:graphicData']['c:chart'].$['r:id'] = 'rId' + id;
+        return this.write(`xl/worksheets/_rels/${sheetName}.xml.rels`, draw);
+    }
+
+    private addChartToSheet = async (sheetName, sheet, id) => {
+        sheet['worksheet']['drawing'] = {
+            $: {
+                'r:id': "rId" + id
+            }
+        };
+        return this.write(`xl/worksheets/${sheetName}.xml`, sheet);
+    }
+
+    public getColName = (n: number) => {
+        var abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        return abc[n] || abc[(n / 26 - 1) | 0] + abc[n % 26];
     }
 
 }

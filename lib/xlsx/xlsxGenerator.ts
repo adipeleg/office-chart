@@ -13,14 +13,15 @@ export class XlsxGenerator {
         return {
             data: sheet,
             name: name,
-            addTable: (data: any[][]) =>{
+            addTable: (data: any[][]) => {
                 return this.xmlTool.writeTable(sheet, name, data)
             },
-            addChart: (range: string, data: any[][]) => this.xmlTool.addChart(sheet, name, data, range)
+            addChart: (range: string, data: any[][], title: string) => this.xmlTool.addChart(sheet, name, title, data, range)
         }
     }
 
     public generate = async (file: string) => {
+        await this.xmlTool.removeTemplateSheets();
         await this.xmlTool.generateFile(file);
     }
 
