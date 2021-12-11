@@ -8,16 +8,20 @@ export class XlsxGenerator {
     }
 
     public createWorksheet = async (name: string) => {
-        // const sheet1 = this.xmlTool.readXml('xl/worksheets/sheet1.xml');
-        // this.xmlTool.write('sheet2', sheet1);
         const id = await this.xmlTool.addSheetToWb(name);
-        await this.xmlTool.createSheet(name, id);
+        const sheet = await this.xmlTool.createSheet(name, id);
+        return {
+            data: sheet,
+            name: name,
+            addTable: (data: any[][]) =>{
+                return this.xmlTool.writeTable(sheet, name, data)
+            },
+            addChart: (range: string, data: any[][]) => this.xmlTool.addChart(sheet, name, data, range)
+        }
     }
 
     public generate = async (file: string) => {
         await this.xmlTool.generateFile(file);
-        // this.createWorksheet
     }
-
 
 }

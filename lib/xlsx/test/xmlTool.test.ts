@@ -3,7 +3,7 @@ import { XmlTool } from '../xmlTool';
 import fs from 'fs';
 xdescribe('check xmlTool', () => {
 
-    xit('', async () => {
+    it('', async () => {
         const tool = new XmlTool();
         await tool.readXlsx();
         const res = await tool.readXml('xl/workbook.xml');
@@ -36,6 +36,7 @@ xdescribe('check xmlTool', () => {
         tool.write('xl/_rels/workbook.xml.rels', WbRel);
         const buf = await tool.generateBuffer();
         fs.writeFileSync('test2.xlsx', buf);
+        console.log('done')
     })
     // it('', async () => {
     //     const tool = new XmlTool();

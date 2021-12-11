@@ -6,16 +6,17 @@ export class XmlTool {
     private zip: JSZip;
     // private zipData: JSZip;
     private parser: xml2js.Parser;
+    private chartZip: JSZip;
     private builder: xml2js.Builder;
-
     constructor() {
         this.zip = new JSZip();
+        this.chartZip = new JSZip();
         this.parser = new xml2js.Parser({ explicitArray: false });
         this.builder = new xml2js.Builder();
         // this.readXlsx();
     }
-    public readXlsx = async () => {
-        let path = __dirname + "/templates/empty.xlsx";
+    public readXlsx = async (fileName?: string) => {
+        let path =  __dirname + "/templates/empty.xlsx";
         // let path = __dirname + "/templates/spreadsheet.xlsx";
         // let path = __dirname + "/templates/test.xlsx";
         // let path = 'xl/worksheets/_rels/sheet1.xml';
@@ -61,7 +62,7 @@ export class XmlTool {
     public addSheetToWb = async (name: string) => {
         const wb = await this.readXml('xl/workbook.xml');
         let count: string;
-        console.log(wb.workbook.sheets.sheet, Array.isArray(wb.workbook.sheets.sheet))
+
         if (!Array.isArray(wb.workbook.sheets.sheet)) {
             count = '5';
             wb.workbook.sheets = {
@@ -84,11 +85,8 @@ export class XmlTool {
     }
 
     public createSheet = async (name: string, id: string) => {
-        // await this.readXlsx();
-
         const resSheet = await this.readXml('xl/worksheets/sheet1.xml');
 
-        // console.log(resSheet.worksheet.drawing);
         delete resSheet.worksheet.drawing
 
         const WbRel = await this.readXml('xl/_rels/workbook.xml.rels');
@@ -105,8 +103,7 @@ export class XmlTool {
 
         this.write(`xl/worksheets/${name}.xml`, resSheet);
         this.write('xl/_rels/workbook.xml.rels', WbRel);
-        // const buf = await this.generateBuffer();
-        // fs.writeFileSync('test3.xlsx', buf);
+        return resSheet;
     }
 
     public generateBuffer = async (): Promise<Buffer> => {
@@ -122,8 +119,79 @@ export class XmlTool {
         fs.writeFileSync(name + '.xlsx', buf);
     }
 
-    public writeTable = async () => {
+    public writeTable = async (sheet: any, name: string, data: any[][]) => {
+        var rows: any = [{
+            $: {
+                r: 1,
+                spans: "1:" + (data[0].length)
+            },
+            c: data[0].map((t, x) => {
+                return {
+                    $: {
+                        r: this.getColName(x + 1) + 1,
+                        // t: "s"
+                    },
+                    v: t.toString()
+                }
+            })
+        }];
 
+        const header = data.shift();
+
+        data.forEach((f, y) => {
+            var r: any = {
+                $: {
+                    r: y + 2,
+                    spans: "1:" + (header.length)
+                }
+            };
+            const c = [];
+            f.forEach((t, x) => {
+                c.push({
+                    $: {
+                        r: this.getColName(x + 1) + (y + 2),
+                    },
+                    v: t.toString()
+                });
+            });
+            r.c = c;
+            rows.push(r);
+        });
+        sheet.worksheet.sheetData = { row: rows };
+        console.log(sheet)
+        return this.write(`xl/worksheets/${name}.xml`, sheet);
+    }
+
+    public addChart = async (sheet: any, name: string, data: any[][], range: string) => {
+        // let path = __dirname + "/templates/charts/chart1.xml";
+        // const read = this.readXml(path);
+        // const chartTemplate = await new Promise((resolve, reject) => fs.readFile(path, 'utf8', async (err, data) => {
+        //     if (err) {
+        //         console.error(`Template ${path} not read: ${err}`);
+        //         reject(err);
+        //         return;
+        //     };
+        //     console.log(data)
+        //     return this.parser.parseStringPromise(data);
+        //     // return await this.chartZip.loadAsync(data).then(d => {
+        //     //     console.log(d)
+        //     //     resolve(d);
+        //     // })
+        // }));
+
+        // console.log(read)
+        // console.log(JSON.parse(await this.parser.parseStringPromise(chartTemplate)));
+        // const chartTemplate = this.readXml(__dirname + "/templates/charts/chart1.xml");
+    }
+
+    public getColName = (n) => {
+        var abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        n--;
+        if (n < 26) {
+            return abc[n];
+        } else {
+            return abc[(n / 26 - 1) | 0] + abc[n % 26];
+        }
     }
 
 }
