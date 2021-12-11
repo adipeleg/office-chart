@@ -8,18 +8,16 @@ export class XmlTool {
     private parser: xml2js.Parser;
     private chartZip: JSZip;
     private builder: xml2js.Builder;
+    
     constructor() {
         this.zip = new JSZip();
         this.chartZip = new JSZip();
         this.parser = new xml2js.Parser({ explicitArray: false });
         this.builder = new xml2js.Builder();
-        // this.readXlsx();
     }
+
     public readXlsx = async (fileName?: string) => {
-        let path =  __dirname + "/templates/empty.xlsx";
-        // let path = __dirname + "/templates/spreadsheet.xlsx";
-        // let path = __dirname + "/templates/test.xlsx";
-        // let path = 'xl/worksheets/_rels/sheet1.xml';
+        let path =  __dirname + "/templates/template.xlsx";
 
         await new Promise((resolve, reject) => fs.readFile(path, async (err, data) => {
             if (err) {
@@ -85,7 +83,7 @@ export class XmlTool {
     }
 
     public createSheet = async (name: string, id: string) => {
-        const resSheet = await this.readXml('xl/worksheets/sheet1.xml');
+        const resSheet = await this.readXml('xl/worksheets/SheetTemplate.xml');
 
         delete resSheet.worksheet.drawing
 
