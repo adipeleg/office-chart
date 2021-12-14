@@ -1,11 +1,9 @@
 import xml2js from 'xml2js';
 import JSZip from "jszip";
 import fs from 'fs';
-import { Chart } from './chart';
 
 export class XmlTool {
     private zip: JSZip;
-    // private zipData: JSZip;
     private parser: xml2js.Parser;
     private chartZip: JSZip;
     private builder: xml2js.Builder;
@@ -171,41 +169,11 @@ export class XmlTool {
         return this.write(`xl/worksheets/sheet${id}.xml`, sheet);
     }
 
-    // public addChart = async (sheet: any, sheetName: string, title: string, data: any[][], range: string, id: string) => {
-
-    // }
-
     public addChart = async (sheet: any, sheetName: string, title: string, data: any[][], range: string, id: string) => {
-        // let path = __dirname + "/templates/charts/chart1.xml";
         let readChart = await this.readXml('xl/charts/chart1.xml');
-        // console.log(readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']);
         readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = title;
         readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:cat']['c:strRef']['c:f'] = sheetName + '!$A$1:$A$2';
-        readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:val']['c:numRef']['c:f'] = sheetName + '!$B$1:$B$2';
-        // console.log(readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser'])
-        // const c = new Chart();
-        // var opts = {
-        //     chart: "bar",
-        //     titles: [
-        //         "Price"
-        //     ],
-        //     fields: [
-        //         "Apple",
-        //         "Blackberry",
-        //         "Strawberry",
-        //         "Cowberry"
-        //     ],
-        //     data: {
-        //         "Price": {
-        //             "Apple": 10,
-        //             "Blackberry": 5,
-        //             "Strawberry": 15,
-        //             "Cowberry": 20
-        //         }
-        //     },
-        //     chartTitle: "Bar chart"
-        // };
-        // const d = c.getChart(sheetName, opts.titles, 1, 1, opts.fields, opts.data, opts.chart, readChart)
+        readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:val']['c:numRef']['c:f'] = sheetName + '!$C$1:$C$2';
         await this.addDrawingRel(sheet, sheetName, id);
         await this.addChartToDraw(id);
         await this.addChartToSheet(sheet, id);
@@ -214,86 +182,6 @@ export class XmlTool {
 
         return this.write(`xl/charts/chart${id}.xml`, readChart);
     }
-
-    public getChart = () => {
-        return {
-            'c:chartSpace': {
-                '@xmlns:c': 'http://schemas.openxmlformats.org/drawingml/2006/chart',
-                '@xmlns:a': 'http://schemas.openxmlformats.org/drawingml/2006/main',
-                '@xmlns:r':
-                    'http://schemas.openxmlformats.org/officeDocument/2006/relationships',
-                'c:lang': { '@val': 'en-US' },
-                'c:date1904': { '@val': '1' },
-                'c:chart': {
-                    'c:plotArea': {
-                        'c:layout': {},
-                        'c:barChart': {
-                            'c:barDir': { '@val': 'col' },
-                            'c:grouping': { '@val': 'clustered' },
-                            // 'c:overlap': { '@val': options.overlap || '0' },
-                            // 'c:gapWidth': { '@val': options.gapWidth || '150' },
-
-                            '#text': [
-                                { 'c:axId': { '@val': '64451712' } },
-                                { 'c:axId': { '@val': '64453248' } }
-                            ]
-                        },
-                        'c:catAx': {
-                            'c:axId': { '@val': '64451712' },
-                            'c:scaling': {
-                                'c:orientation': {
-                                    // '@val': options.catAxisReverseOrder ? 'maxMin' : 'minMax'
-                                }
-                            },
-                            'c:axPos': { '@val': 'l' },
-                            'c:tickLblPos': { '@val': 'nextTo' },
-                            'c:crossAx': { '@val': '64453248' },
-                            'c:crosses': { '@val': 'autoZero' },
-                            'c:auto': { '@val': '1' },
-                            'c:lblAlgn': { '@val': 'ctr' },
-                            'c:lblOffset': { '@val': '100' }
-                        },
-                        'c:valAx': {
-                            'c:axId': { '@val': '64453248' },
-                            'c:scaling': {
-                                'c:orientation': { '@val': 'minMax' }
-                            },
-                            'c:axPos': { '@val': 'b' },
-                            //              "c:majorGridlines": {},
-                            'c:numFmt': {
-                                '@formatCode': 'General',
-                                '@sourceLinked': '1'
-                            },
-                            'c:tickLblPos': { '@val': 'nextTo' },
-                            'c:crossAx': { '@val': '64451712' },
-                            'c:crosses': {
-                                // '@val': options.valAxisCrossAtMaxCategory ? 'max' : 'autoZero'
-                            },
-                            'c:crossBetween': { '@val': 'between' }
-                        }
-                    },
-                    'c:legend': {
-                        'c:legendPos': { '@val': 'r' },
-                        'c:layout': {}
-                    },
-                    'c:plotVisOnly': { '@val': '1' }
-                },
-                'c:txPr': {
-                    'a:bodyPr': {},
-                    'a:lstStyle': {},
-                    'a:p': {
-                        'a:pPr': {
-                            'a:defRPr': { '@sz': '1800' }
-                        },
-                        'a:endParaRPr': { '@lang': 'en-US' }
-                    }
-                },
-                // 'c:externalData': { '@r:id': 'rId1' }
-            }
-        }
-    }
-
-
 
     private addDrawingRel = async (sheet, sheetName: string, id: string) => {
         const drawRel = await this.readXml('xl/drawings/_rels/drawing2.xml.rels'); //add new chart rel
