@@ -19,7 +19,7 @@
       </xdr:xfrm>
       <a:graphic>
         <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
-          <c:chart r:id="rId2"/>
+          <c:chart r:id="rId7"/>
         </a:graphicData>
       </a:graphic>
     </xdr:graphicFrame>

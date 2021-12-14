@@ -1,6 +1,7 @@
 import xml2js from 'xml2js';
 import JSZip from "jszip";
 import fs from 'fs';
+import { Chart } from './chart';
 
 export class XmlTool {
     private zip: JSZip;
@@ -76,7 +77,7 @@ export class XmlTool {
                 '$': { state: 'visible', name: name, sheetId: count, 'r:id': 'rId' + count }
             });
         }
-
+        this.addSheetToParts(count);
         // console.log(wb.workbook.sheets.sheet)
         this.write('xl/workbook.xml', wb);
         return count;
@@ -170,29 +171,134 @@ export class XmlTool {
         return this.write(`xl/worksheets/sheet${id}.xml`, sheet);
     }
 
+    // public addChart = async (sheet: any, sheetName: string, title: string, data: any[][], range: string, id: string) => {
+
+    // }
+
     public addChart = async (sheet: any, sheetName: string, title: string, data: any[][], range: string, id: string) => {
         // let path = __dirname + "/templates/charts/chart1.xml";
-        const readChart = await this.readXml('xl/charts/chart1.xml');
+        let readChart = await this.readXml('xl/charts/chart1.xml');
         // console.log(readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']);
         readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = title;
-        readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:cat']['c:strRef']['c:f'] = sheetName + '!$A$1:$A$3';
-        readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:val']['c:numRef']['c:f'] = sheetName + '!$B$1:$B$3';
+        readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:cat']['c:strRef']['c:f'] = sheetName + '!$A$1:$A$2';
+        readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:val']['c:numRef']['c:f'] = sheetName + '!$B$1:$B$2';
+        // console.log(readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser'])
+        // const c = new Chart();
+        // var opts = {
+        //     chart: "bar",
+        //     titles: [
+        //         "Price"
+        //     ],
+        //     fields: [
+        //         "Apple",
+        //         "Blackberry",
+        //         "Strawberry",
+        //         "Cowberry"
+        //     ],
+        //     data: {
+        //         "Price": {
+        //             "Apple": 10,
+        //             "Blackberry": 5,
+        //             "Strawberry": 15,
+        //             "Cowberry": 20
+        //         }
+        //     },
+        //     chartTitle: "Bar chart"
+        // };
+        // const d = c.getChart(sheetName, opts.titles, 1, 1, opts.fields, opts.data, opts.chart, readChart)
         await this.addDrawingRel(sheet, sheetName, id);
         await this.addChartToDraw(id);
         await this.addChartToSheet(sheet, id);
         await this.addChartToSheetRel(id);
-        //might not work because file name
+        await this.addChartToParts(id);
+
         return this.write(`xl/charts/chart${id}.xml`, readChart);
     }
 
+    public getChart = () => {
+        return {
+            'c:chartSpace': {
+                '@xmlns:c': 'http://schemas.openxmlformats.org/drawingml/2006/chart',
+                '@xmlns:a': 'http://schemas.openxmlformats.org/drawingml/2006/main',
+                '@xmlns:r':
+                    'http://schemas.openxmlformats.org/officeDocument/2006/relationships',
+                'c:lang': { '@val': 'en-US' },
+                'c:date1904': { '@val': '1' },
+                'c:chart': {
+                    'c:plotArea': {
+                        'c:layout': {},
+                        'c:barChart': {
+                            'c:barDir': { '@val': 'col' },
+                            'c:grouping': { '@val': 'clustered' },
+                            // 'c:overlap': { '@val': options.overlap || '0' },
+                            // 'c:gapWidth': { '@val': options.gapWidth || '150' },
+
+                            '#text': [
+                                { 'c:axId': { '@val': '64451712' } },
+                                { 'c:axId': { '@val': '64453248' } }
+                            ]
+                        },
+                        'c:catAx': {
+                            'c:axId': { '@val': '64451712' },
+                            'c:scaling': {
+                                'c:orientation': {
+                                    // '@val': options.catAxisReverseOrder ? 'maxMin' : 'minMax'
+                                }
+                            },
+                            'c:axPos': { '@val': 'l' },
+                            'c:tickLblPos': { '@val': 'nextTo' },
+                            'c:crossAx': { '@val': '64453248' },
+                            'c:crosses': { '@val': 'autoZero' },
+                            'c:auto': { '@val': '1' },
+                            'c:lblAlgn': { '@val': 'ctr' },
+                            'c:lblOffset': { '@val': '100' }
+                        },
+                        'c:valAx': {
+                            'c:axId': { '@val': '64453248' },
+                            'c:scaling': {
+                                'c:orientation': { '@val': 'minMax' }
+                            },
+                            'c:axPos': { '@val': 'b' },
+                            //              "c:majorGridlines": {},
+                            'c:numFmt': {
+                                '@formatCode': 'General',
+                                '@sourceLinked': '1'
+                            },
+                            'c:tickLblPos': { '@val': 'nextTo' },
+                            'c:crossAx': { '@val': '64451712' },
+                            'c:crosses': {
+                                // '@val': options.valAxisCrossAtMaxCategory ? 'max' : 'autoZero'
+                            },
+                            'c:crossBetween': { '@val': 'between' }
+                        }
+                    },
+                    'c:legend': {
+                        'c:legendPos': { '@val': 'r' },
+                        'c:layout': {}
+                    },
+                    'c:plotVisOnly': { '@val': '1' }
+                },
+                'c:txPr': {
+                    'a:bodyPr': {},
+                    'a:lstStyle': {},
+                    'a:p': {
+                        'a:pPr': {
+                            'a:defRPr': { '@sz': '1800' }
+                        },
+                        'a:endParaRPr': { '@lang': 'en-US' }
+                    }
+                },
+                // 'c:externalData': { '@r:id': 'rId1' }
+            }
+        }
+    }
+
+
+
     private addDrawingRel = async (sheet, sheetName: string, id: string) => {
         const drawRel = await this.readXml('xl/drawings/_rels/drawing2.xml.rels'); //add new chart rel
-        // console.log(drawRel.Relationships.Relationship);
-
-        // let id = 2
-        // if (!Array.isArray(drawRel.Relationships.Relationship)) {
         drawRel.Relationships.Relationship =
-        // { '$': drawRel.Relationships.Relationship.$ },
+
         {
             '$': {
                 Id: 'rId' + id,
@@ -202,39 +308,20 @@ export class XmlTool {
             }
         }
 
-
-        // } else {
-        //     id = drawRel.Relationships.Relationship.length;
-        //     drawRel.Relationships.Relationship.push({
-        //         '$':
-        //         {
-        //             Id: 'rId' + id,
-        //             Type:
-        //                 "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart",
-        //             Target: `../charts/chart${sheetName}.xml`
-        //         }
-        //     })
-
-        // }
-
         await this.write(`xl/drawings/_rels/drawing${id}.xml.rels`, drawRel);
         return id;
 
-        //add to sheet relationships as drawing
-        //add to sheet as drawing;
     }
 
     private addChartToDraw = async (id) => {
         const draw = await this.readXml('xl/drawings/drawing2.xml'); // add new chart draw
-        // console.log(draw['xdr:wsDr']['xdr:oneCellAnchor']['xdr:graphicFrame']['a:graphic']['a:graphicData']['c:chart'].$['r:id']);
         draw['xdr:wsDr']['xdr:oneCellAnchor']['xdr:graphicFrame']['a:graphic']['a:graphicData']['c:chart'].$['r:id'] = 'rId' + id;
-        return this.write(`xl/drawings/chart${id}.xml`, draw);
+        return this.write(`xl/drawings/drawing${id}.xml`, draw);
     }
 
     private addChartToSheetRel = async (id: string) => {
         const draw = await this.readXml('xl/worksheets/_rels/sheet2.xml.rels'); // add new chart to sheet rel
-        // console.log(draw['xdr:wsDr']['xdr:oneCellAnchor']['xdr:graphicFrame']['a:graphic']['a:graphicData']['c:chart'].$['r:id']);
-        console.log(draw['Relationships']['Relationship'])
+        // console.log(draw['Relationships']['Relationship'])
         draw['Relationships']['Relationship'] =
         {
             '$':
@@ -242,10 +329,10 @@ export class XmlTool {
                 Id: 'rId' + id,
                 Type:
                     'http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing',
-                Target: `../drawings/chart${id}.xml`
+                Target: `../drawings/drawing${id}.xml`
             }
         }
-        // draw['xdr:wsDr']['xdr:oneCellAnchor']['xdr:graphicFrame']['a:graphic']['a:graphicData']['c:chart'].$['r:id'] = 'rId' + id;
+
         return this.write(`xl/worksheets/_rels/sheet${id}.xml.rels`, draw);
     }
 
@@ -256,6 +343,48 @@ export class XmlTool {
             }
         };
         return this.write(`xl/worksheets/sheet${id}.xml`, sheet);
+    }
+
+    private addChartToParts = async (id: string) => {
+        const parts = await this.readXml('[Content_Types].xml');
+        console.log(parts['Types']['Override'])
+        parts['Types']['Override'].push({
+            '$':
+            {
+                ContentType:
+                    'application/vnd.openxmlformats-officedocument.drawingml.chart+xml',
+                PartName: `/xl/charts/chart${id}.xml`
+            }
+        })
+        parts['Types']['Override'].push({
+            '$':
+            {
+                ContentType: 'application/vnd.openxmlformats-officedocument.drawing+xml',
+                PartName: `/xl/drawings/drawing${id}.xml`
+            }
+        })
+        console.log(parts['Types']['Override'])
+
+        return this.write(`[Content_Types].xml`, parts);
+
+    }
+
+    private addSheetToParts = async (id: string) => {
+        const parts = await this.readXml('[Content_Types].xml');
+        console.log(parts['Types']['Override'])
+        parts['Types']['Override'].push({
+            '$':
+            {
+                ContentType:
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml',
+                PartName: `/xl/worksheets/sheet${id}.xml`
+            }
+        })
+
+        console.log(parts['Types']['Override'])
+
+        return this.write(`[Content_Types].xml`, parts);
+
     }
 
     public getColName = (n: number) => {

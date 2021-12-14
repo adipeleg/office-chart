@@ -7,40 +7,5 @@
     <sheetView workbookViewId="0"/>
   </sheetViews>
   <sheetFormatPr customHeight="1" defaultColWidth="14.43" defaultRowHeight="15.75"/>
-  <sheetData>
-    <row r="1" spans="1:3">
-      <c r="A1">
-        <v>0</v>
-      </c>
-      <c r="B1">
-        <v>1</v>
-      </c>
-      <c r="C1">
-        <v>2</v>
-      </c>
-    </row>
-    <row r="2" spans="1:3">
-      <c r="A2">
-        <v>1</v>
-      </c>
-      <c r="B2">
-        <v>2</v>
-      </c>
-      <c r="C2">
-        <v>3</v>
-      </c>
-    </row>
-    <row r="3" spans="1:3">
-      <c r="A3">
-        <v>4</v>
-      </c>
-      <c r="B3">
-        <v>5</v>
-      </c>
-      <c r="C3">
-        <v>6</v>
-      </c>
-    </row>
-  </sheetData>
-  <drawing r:id="rId2"/>
+  <sheetData/>
 </worksheet>
