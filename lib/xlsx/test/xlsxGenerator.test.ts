@@ -6,11 +6,11 @@ describe('check xlsxGenerator', () => {
         const sheet1 = await gen.createWorksheet("sheet1");
         const sheet2 = await gen.createWorksheet("sheetWithChart2");
         await sheet2.addTable(getShotData());
-        sheet2.addChart("", [['h1', 'h2', 'h3'], [1, 2, 3], [4, 5, 6]], 'testChart')
+        sheet2.addChart("A1:C3", 'testChart', 'line')
         const sheet3 = await gen.createWorksheet("sheet3");
         // sheet3.addTable(getLongData());
         const sheet4 = await gen.createWorksheet("sheet4");
-        await gen.generate('test5');
+        await gen.generate('test7');
     })
 })
 

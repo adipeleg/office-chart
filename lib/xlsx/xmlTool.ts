@@ -1,21 +1,19 @@
 import xml2js from 'xml2js';
-import JSZip from "jszip";
+import JSZip, { forEach } from "jszip";
 import fs from 'fs';
 
 export class XmlTool {
     private zip: JSZip;
     private parser: xml2js.Parser;
-    private chartZip: JSZip;
     private builder: xml2js.Builder;
 
     constructor() {
         this.zip = new JSZip();
-        this.chartZip = new JSZip();
         this.parser = new xml2js.Parser({ explicitArray: false });
         this.builder = new xml2js.Builder();
     }
 
-    public readXlsx = async (fileName?: string) => {
+    public readXlsx = async () => {
         let path = __dirname + "/templates/template.xlsx";
 
         await new Promise((resolve, reject) => fs.readFile(path, async (err, data) => {
@@ -25,7 +23,6 @@ export class XmlTool {
                 return;
             };
             return await this.zip.loadAsync(data).then(d => {
-                console.log(d)
                 resolve(d);
             })
         }));
@@ -33,16 +30,7 @@ export class XmlTool {
 
     public readXml = async (file: string) => {
         return this.zip.file(file).async('string').then(data => {
-            // console.log('data', data)
             return this.parser.parseStringPromise(data);
-        })
-    }
-
-    public readXmlStr = async (file: string): Promise<string> => {
-        return this.zip.file(file).async('string').then(data => {
-            console.log('data', data)
-            return data;
-            // return this.parser.parseStringPromise(data);
         })
     }
 
@@ -76,7 +64,6 @@ export class XmlTool {
             });
         }
         this.addSheetToParts(count);
-        // console.log(wb.workbook.sheets.sheet)
         this.write('xl/workbook.xml', wb);
         return count;
     }
@@ -127,12 +114,14 @@ export class XmlTool {
     }
 
     public writeTable = async (sheet: any, data: any[][], id: string) => {
+        const header = data.shift();
+
         var rows: any = [{
             $: {
                 r: 1,
-                spans: "1:" + (data[0].length)
+                spans: "1:" + (header.length)
             },
-            c: data[0].map((t, x) => {
+            c: header.map((t, x) => {
                 return {
                     $: {
                         r: this.getColName(x) + 1,
@@ -143,7 +132,6 @@ export class XmlTool {
             })
         }];
 
-        const header = data.shift();
 
         data.forEach((f, y) => {
             var r: any = {
@@ -169,11 +157,34 @@ export class XmlTool {
         return this.write(`xl/worksheets/sheet${id}.xml`, sheet);
     }
 
-    public addChart = async (sheet: any, sheetName: string, title: string, data: any[][], range: string, id: string) => {
+    public addChart = async (sheet: any, sheetName: string, title: string, range: string, id: string, type: 'line' | 'bar') => {
         let readChart = await this.readXml('xl/charts/chart1.xml');
         readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = title;
-        readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:cat']['c:strRef']['c:f'] = sheetName + '!$A$1:$A$2';
-        readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']['c:ser']['c:val']['c:numRef']['c:f'] = sheetName + '!$C$1:$C$2';
+
+        const chartType = type === 'line' ? 'c:lineChart' : 'c:barChart';
+        if (type === 'line') {
+            readChart['c:chartSpace']['c:chart']['c:plotArea']['c:lineChart'] = JSON.parse(JSON.stringify(readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']));
+            delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart'];
+        }
+
+        let rowNum = 1;
+        try {
+            rowNum = this.ColToNum(range.split(':')[1][0])
+        } catch {
+            console.log('range is not right');
+        }
+        const ser = { ...readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] };
+        readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] = [];
+
+        for (let i = 1; i < rowNum + 1; i++) {
+            let d = JSON.parse(JSON.stringify(ser));;
+            d['c:idx'] = i;
+            d['c:order'] = i;
+            d['c:cat']['c:strRef']['c:f'] = sheetName + '!$A$1:$C$1';
+            d['c:val']['c:numRef']['c:f'] = sheetName + '!$A$' + (i + 1) + ':$C$' + (i + 1) + '';
+            readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d)
+        }
+
         await this.addDrawingRel(sheet, sheetName, id);
         await this.addChartToDraw(id);
         await this.addChartToSheet(sheet, id);
@@ -209,7 +220,7 @@ export class XmlTool {
 
     private addChartToSheetRel = async (id: string) => {
         const draw = await this.readXml('xl/worksheets/_rels/sheet2.xml.rels'); // add new chart to sheet rel
-        // console.log(draw['Relationships']['Relationship'])
+
         draw['Relationships']['Relationship'] =
         {
             '$':
@@ -235,7 +246,7 @@ export class XmlTool {
 
     private addChartToParts = async (id: string) => {
         const parts = await this.readXml('[Content_Types].xml');
-        console.log(parts['Types']['Override'])
+
         parts['Types']['Override'].push({
             '$':
             {
@@ -251,7 +262,6 @@ export class XmlTool {
                 PartName: `/xl/drawings/drawing${id}.xml`
             }
         })
-        console.log(parts['Types']['Override'])
 
         return this.write(`[Content_Types].xml`, parts);
 
@@ -259,7 +269,7 @@ export class XmlTool {
 
     private addSheetToParts = async (id: string) => {
         const parts = await this.readXml('[Content_Types].xml');
-        console.log(parts['Types']['Override'])
+
         parts['Types']['Override'].push({
             '$':
             {
@@ -269,15 +279,20 @@ export class XmlTool {
             }
         })
 
-        console.log(parts['Types']['Override'])
-
         return this.write(`[Content_Types].xml`, parts);
 
     }
 
     public getColName = (n: number) => {
         var abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        return abc[n] || abc[(n / 26 - 1) | 0] + abc[n % 26];
+        return abc[n] || abc[n % 26];
     }
+
+
+    public ColToNum = (char: string) => {
+        var abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        return abc.indexOf(char);
+    }
+
 
 }

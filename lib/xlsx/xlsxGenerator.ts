@@ -1,10 +1,9 @@
 import { XmlTool } from './xmlTool';
 export class XlsxGenerator {
-    private workbook;
     private xmlTool: XmlTool = new XmlTool();
 
     public createWorkbook = async () => {
-        this.workbook = await this.xmlTool.readXlsx()
+        return this.xmlTool.readXlsx()
     }
 
     public createWorksheet = async (name: string) => {
@@ -17,7 +16,7 @@ export class XlsxGenerator {
             addTable: (data: any[][]) => {
                 return this.xmlTool.writeTable(sheet, data, id)
             },
-            addChart: (range: string, data: any[][], title: string) => this.xmlTool.addChart(sheet, name, title, data, range, id)
+            addChart: (range: string, title: string, type: 'line' | 'bar') => this.xmlTool.addChart(sheet, name, title, range, id, type)
         }
     }
 
