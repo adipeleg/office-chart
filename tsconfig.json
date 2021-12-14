@@ -2,9 +2,15 @@
     "compilerOptions": {
         "module": "commonjs",
         "moduleResolution": "node",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "target": "es2015",
+        "declaration": true,
+        "outDir": "./dist"
     },
     "exclude": [
         "node_modules"
+    ],
+    "include": [
+        "lib/**/*"
     ]
 }
