@@ -98,10 +98,6 @@ export class XmlTool {
         return this.zip.generateAsync({ type: 'nodebuffer' });
     }
 
-    public generate = async (): Promise<string> => {
-        return this.zip.generateAsync({ type: 'string' });
-    }
-
     public generateFile = async (name: string) => {
         const buf = await this.generateBuffer();
         fs.writeFileSync(name + '.xlsx', buf);
@@ -119,47 +115,29 @@ export class XmlTool {
     }
 
     public writeTable = async (sheet: any, data: any[][], id: string) => {
+        const sheetWithTable = await this.readXml('xl/worksheets/sheet2.xml');
+        const rowTemplate = sheetWithTable.worksheet.sheetData.row[0];
         const header = data.shift();
 
-        var rows: any = [{
-            $: {
-                r: 1,
-                spans: "1:" + (header.length)
-            },
-            c: header.map((t, x) => {
-                return {
-                    $: {
-                        r: this.getColName(x) + 1,
-                        // t: "s"
-                    },
-                    v: t.toString()
-                }
-            })
-        }];
-
-
-        data.forEach((f, y) => {
-            var r: any = {
-                $: {
-                    r: y + 2,
-                    spans: "1:" + (header.length)
-                }
-            };
-            const c = [];
-            f.forEach((t, x) => {
-                c.push({
-                    $: {
-                        r: this.getColName(x) + (y + 2),
-                    },
-                    v: t.toString()
-                });
-            });
-            r.c = c;
-            rows.push(r);
-        });
+        const rows: any[] = [];
+        rows.push(this.addRow(header, JSON.parse(JSON.stringify(rowTemplate)), 1));
+        data.forEach((data, idx) => {
+            rows.push(this.addRow(data, JSON.parse(JSON.stringify(rowTemplate)), idx + 2));
+        })
         sheet.worksheet.sheetData = { row: rows };
 
         return this.write(`xl/worksheets/sheet${id}.xml`, sheet);
+    }
+
+    private addRow(rowData: any[], rowTemplate: any, index: number) {
+        rowTemplate.$.r = index;
+        const cols: any[] = [];
+        rowData.forEach((data, col) => {
+            cols.push({ '$': { r: this.getColName(col) + (index), s: '1' }, v: data })
+        })
+
+        rowTemplate.c = cols;
+        return rowTemplate;
     }
 
     public addChart = async (sheet: any, sheetName: string, title: string, range: string, id: string, type: 'line' | 'bar') => {
@@ -178,6 +156,7 @@ export class XmlTool {
         } catch {
             console.log('range is not right');
         }
+
         const ser = { ...readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] };
         readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] = [];
 
@@ -288,16 +267,14 @@ export class XmlTool {
 
     }
 
-    public getColName = (n: number) => {
+    private getColName = (n: number) => {
         var abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return abc[n] || abc[n % 26];
     }
 
 
-    public ColToNum = (char: string) => {
+    private ColToNum = (char: string) => {
         var abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return abc.indexOf(char);
     }
-
-
 }

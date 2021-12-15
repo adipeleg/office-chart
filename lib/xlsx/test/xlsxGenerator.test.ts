@@ -11,8 +11,8 @@ describe('check xlsxGenerator', () => {
         // sheet3.addTable(getLongData());
         const sheet4 = await gen.createWorksheet("sheet4");
         await gen.generate(__dirname + '/test8', 'file');
-        const buffer = await gen.generate(__dirname + '/test8', 'file');
-        console.log(buffer);
+        const buffer = await gen.generate(__dirname + '/test9', 'file');
+        // console.log(buffer);
     })
 })
 
