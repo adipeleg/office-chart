@@ -20,9 +20,13 @@ export class XlsxGenerator {
         }
     }
 
-    public generate = async (file: string) => {
+    public generate = async (file: string, type: 'file' | 'buffer') => {
         await this.xmlTool.removeTemplateSheets();
-        await this.xmlTool.generateFile(file);
+        if (type === 'file') {
+            return this.xmlTool.generateFile(file);
+        } else {
+            return this.xmlTool.generateBuffer();
+        }
     }
 
 }

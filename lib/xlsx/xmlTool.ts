@@ -13,6 +13,10 @@ export class XmlTool {
         this.builder = new xml2js.Builder();
     }
 
+    public getZip = (): JSZip => {
+        return this.zip;
+    }
+
     public readXlsx = async () => {
         let path = __dirname + "/templates/template.xlsx";
 
@@ -101,6 +105,7 @@ export class XmlTool {
     public generateFile = async (name: string) => {
         const buf = await this.generateBuffer();
         fs.writeFileSync(name + '.xlsx', buf);
+        return buf;
     }
 
     public removeTemplateSheets = async () => {

@@ -10,7 +10,9 @@ describe('check xlsxGenerator', () => {
         const sheet3 = await gen.createWorksheet("sheet3");
         // sheet3.addTable(getLongData());
         const sheet4 = await gen.createWorksheet("sheet4");
-        await gen.generate(__dirname + '/test7');
+        await gen.generate(__dirname + '/test8', 'file');
+        const buffer = await gen.generate(__dirname + '/test8', 'file');
+        console.log(buffer);
     })
 })
 
