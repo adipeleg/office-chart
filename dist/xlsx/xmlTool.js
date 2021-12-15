@@ -18,6 +18,9 @@ const jszip_1 = __importDefault(require("jszip"));
 const fs_1 = __importDefault(require("fs"));
 class XmlTool {
     constructor() {
+        this.getZip = () => {
+            return this.zip;
+        };
         this.readXlsx = () => __awaiter(this, void 0, void 0, function* () {
             let path = __dirname + "/templates/template.xlsx";
             yield new Promise((resolve, reject) => fs_1.default.readFile(path, (err, data) => __awaiter(this, void 0, void 0, function* () {
@@ -85,12 +88,10 @@ class XmlTool {
         this.generateBuffer = () => __awaiter(this, void 0, void 0, function* () {
             return this.zip.generateAsync({ type: 'nodebuffer' });
         });
-        this.generate = () => __awaiter(this, void 0, void 0, function* () {
-            return this.zip.generateAsync({ type: 'string' });
-        });
         this.generateFile = (name) => __awaiter(this, void 0, void 0, function* () {
             const buf = yield this.generateBuffer();
             fs_1.default.writeFileSync(name + '.xlsx', buf);
+            return buf;
         });
         this.removeTemplateSheets = () => __awaiter(this, void 0, void 0, function* () {
             const wb = yield this.readXml('xl/workbook.xml');
@@ -100,40 +101,13 @@ class XmlTool {
             return this.write('xl/workbook.xml', wb);
         });
         this.writeTable = (sheet, data, id) => __awaiter(this, void 0, void 0, function* () {
+            const sheetWithTable = yield this.readXml('xl/worksheets/sheet2.xml');
+            const rowTemplate = sheetWithTable.worksheet.sheetData.row[0];
             const header = data.shift();
-            var rows = [{
-                    $: {
-                        r: 1,
-                        spans: "1:" + (header.length)
-                    },
-                    c: header.map((t, x) => {
-                        return {
-                            $: {
-                                r: this.getColName(x) + 1,
-                                // t: "s"
-                            },
-                            v: t.toString()
-                        };
-                    })
-                }];
-            data.forEach((f, y) => {
-                var r = {
-                    $: {
-                        r: y + 2,
-                        spans: "1:" + (header.length)
-                    }
-                };
-                const c = [];
-                f.forEach((t, x) => {
-                    c.push({
-                        $: {
-                            r: this.getColName(x) + (y + 2),
-                        },
-                        v: t.toString()
-                    });
-                });
-                r.c = c;
-                rows.push(r);
+            const rows = [];
+            rows.push(this.addRow(header, JSON.parse(JSON.stringify(rowTemplate)), 1));
+            data.forEach((data, idx) => {
+                rows.push(this.addRow(data, JSON.parse(JSON.stringify(rowTemplate)), idx + 2));
             });
             sheet.worksheet.sheetData = { row: rows };
             return this.write(`xl/worksheets/sheet${id}.xml`, sheet);
@@ -246,6 +220,15 @@ class XmlTool {
         this.zip = new jszip_1.default();
         this.parser = new xml2js_1.default.Parser({ explicitArray: false });
         this.builder = new xml2js_1.default.Builder();
+    }
+    addRow(rowData, rowTemplate, index) {
+        rowTemplate.$.r = index;
+        const cols = [];
+        rowData.forEach((data, col) => {
+            cols.push({ '$': { r: this.getColName(col) + (index), s: '1' }, v: data });
+        });
+        rowTemplate.c = cols;
+        return rowTemplate;
     }
 }
 exports.XmlTool = XmlTool;

@@ -1,3 +1,4 @@
+/// <reference types="node" />
 export declare class XlsxGenerator {
     private xmlTool;
     createWorkbook: () => Promise<void>;
@@ -8,5 +9,5 @@ export declare class XlsxGenerator {
         addTable: (data: any[][]) => Promise<void>;
         addChart: (range: string, title: string, type: 'line' | 'bar') => Promise<void>;
     }>;
-    generate: (file: string) => Promise<void>;
+    generate: (file: string, type: 'file' | 'buffer') => Promise<Buffer>;
 }

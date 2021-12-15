@@ -30,9 +30,14 @@ class XlsxGenerator {
                 addChart: (range, title, type) => this.xmlTool.addChart(sheet, name, title, range, id, type)
             };
         });
-        this.generate = (file) => __awaiter(this, void 0, void 0, function* () {
+        this.generate = (file, type) => __awaiter(this, void 0, void 0, function* () {
             yield this.xmlTool.removeTemplateSheets();
-            yield this.xmlTool.generateFile(file);
+            if (type === 'file') {
+                return this.xmlTool.generateFile(file);
+            }
+            else {
+                return this.xmlTool.generateBuffer();
+            }
         });
     }
 }

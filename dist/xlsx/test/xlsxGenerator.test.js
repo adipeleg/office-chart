@@ -21,7 +21,9 @@ describe('check xlsxGenerator', () => {
         const sheet3 = yield gen.createWorksheet("sheet3");
         // sheet3.addTable(getLongData());
         const sheet4 = yield gen.createWorksheet("sheet4");
-        yield gen.generate('test7');
+        yield gen.generate(__dirname + '/test8', 'file');
+        const buffer = yield gen.generate(__dirname + '/test9', 'file');
+        // console.log(buffer);
     }));
 });
 const getLongData = () => {
