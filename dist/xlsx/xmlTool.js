@@ -119,23 +119,32 @@ class XmlTool {
             if (type === 'line') {
                 readChart['c:chartSpace']['c:chart']['c:plotArea']['c:lineChart'] = JSON.parse(JSON.stringify(readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']));
                 delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart'];
+                delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:lineChart']['c:barDir'];
             }
             let rowNum = 1;
+            let lastCol = 'A';
+            let firstCol = 'A';
             try {
-                rowNum = this.ColToNum(range.split(':')[1][0]);
+                const splitRange = range.split(':');
+                const first = splitRange[0];
+                firstCol = first[0];
+                const sec = splitRange[1];
+                lastCol = sec[0];
+                rowNum = parseInt(sec.substring(1));
             }
             catch (_a) {
                 console.log('range is not right');
+                throw Error('range is not right');
             }
             const ser = Object.assign({}, readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser']);
             readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] = [];
-            for (let i = 1; i < rowNum + 1; i++) {
+            for (let i = 1; i < rowNum; i++) {
                 let d = JSON.parse(JSON.stringify(ser));
                 ;
                 d['c:idx'] = i;
                 d['c:order'] = i;
-                d['c:cat']['c:strRef']['c:f'] = sheetName + '!$A$1:$C$1';
-                d['c:val']['c:numRef']['c:f'] = sheetName + '!$A$' + (i + 1) + ':$C$' + (i + 1) + '';
+                d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$1:$${lastCol}$1`;
+                d['c:val']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$${(i + 1)}:$${lastCol}$${(i + 1)}`;
                 readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d);
             }
             yield this.addDrawingRel(sheet, sheetName, id);
@@ -184,7 +193,7 @@ class XmlTool {
             return this.write(`xl/worksheets/sheet${id}.xml`, sheet);
         });
         this.addChartToParts = (id) => __awaiter(this, void 0, void 0, function* () {
-            const parts = yield this.readXml('[Content_Types].xml');
+            const parts = this.parts || (yield this.readXml('[Content_Types].xml'));
             parts['Types']['Override'].push({
                 '$': {
                     ContentType: 'application/vnd.openxmlformats-officedocument.drawingml.chart+xml',
@@ -197,6 +206,7 @@ class XmlTool {
                     PartName: `/xl/drawings/drawing${id}.xml`
                 }
             });
+            this.parts = parts;
             return this.write(`[Content_Types].xml`, parts);
         });
         this.addSheetToParts = (id) => __awaiter(this, void 0, void 0, function* () {
@@ -225,7 +235,12 @@ class XmlTool {
         rowTemplate.$.r = index;
         const cols = [];
         rowData.forEach((data, col) => {
-            cols.push({ '$': { r: this.getColName(col) + (index), s: '1' }, v: data });
+            const type = typeof data === 'string' ? 's' : '';
+            const c = { '$': { r: this.getColName(col) + (index), s: '1' }, v: data };
+            if (type === 's') {
+                c.$['t'] = 'str';
+            }
+            cols.push(c);
         });
         rowTemplate.c = cols;
         return rowTemplate;

@@ -4,6 +4,7 @@ export declare class XmlTool {
     private zip;
     private parser;
     private builder;
+    private parts;
     constructor();
     getZip: () => JSZip;
     readXlsx: () => Promise<void>;
