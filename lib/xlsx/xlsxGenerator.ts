@@ -16,7 +16,7 @@ export class XlsxGenerator {
             addTable: (data: any[][]) => {
                 return this.xmlTool.writeTable(sheet, data, id)
             },
-            addChart: (range: string, title: string, type: 'line' | 'bar') => this.xmlTool.addChart(sheet, name, title, range, id, type)
+            addChart: async (range: string, title: string, type: 'line' | 'bar') => await this.xmlTool.addChart(sheet, name, title, range, id, type)
         }
     }
 

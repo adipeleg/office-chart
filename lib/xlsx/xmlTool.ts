@@ -1,11 +1,12 @@
 import xml2js from 'xml2js';
-import JSZip, { forEach } from "jszip";
+import JSZip from "jszip";
 import fs from 'fs';
 
 export class XmlTool {
     private zip: JSZip;
     private parser: xml2js.Parser;
     private builder: xml2js.Builder;
+    private parts: any;
 
     constructor() {
         this.zip = new JSZip();
@@ -133,7 +134,12 @@ export class XmlTool {
         rowTemplate.$.r = index;
         const cols: any[] = [];
         rowData.forEach((data, col) => {
-            cols.push({ '$': { r: this.getColName(col) + (index), s: '1' }, v: data })
+            const type = typeof data === 'string' ? 's' : '';
+            const c = { '$': { r: this.getColName(col) + (index), s: '1' }, v: data }
+            if (type === 's') {
+                c.$['t'] = 'str';
+            }
+            cols.push(c)
         })
 
         rowTemplate.c = cols;
@@ -148,24 +154,33 @@ export class XmlTool {
         if (type === 'line') {
             readChart['c:chartSpace']['c:chart']['c:plotArea']['c:lineChart'] = JSON.parse(JSON.stringify(readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']));
             delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart'];
+            delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:lineChart']['c:barDir'];
         }
 
         let rowNum = 1;
+        let lastCol = 'A';
+        let firstCol = 'A';
         try {
-            rowNum = this.ColToNum(range.split(':')[1][0])
+            const splitRange: string[] = range.split(':');
+            const first = splitRange[0]
+            firstCol = first[0]
+            const sec = splitRange[1];
+            lastCol = sec[0];
+            rowNum = parseInt(sec.substring(1));
         } catch {
             console.log('range is not right');
+            throw Error('range is not right');
         }
 
         const ser = { ...readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] };
         readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] = [];
 
-        for (let i = 1; i < rowNum + 1; i++) {
+        for (let i = 1; i < rowNum; i++) {
             let d = JSON.parse(JSON.stringify(ser));;
             d['c:idx'] = i;
             d['c:order'] = i;
-            d['c:cat']['c:strRef']['c:f'] = sheetName + '!$A$1:$C$1';
-            d['c:val']['c:numRef']['c:f'] = sheetName + '!$A$' + (i + 1) + ':$C$' + (i + 1) + '';
+            d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$1:$${lastCol}$1`;
+            d['c:val']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$${(i + 1)}:$${lastCol}$${(i + 1)}`;
             readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d)
         }
 
@@ -229,7 +244,7 @@ export class XmlTool {
     }
 
     private addChartToParts = async (id: string) => {
-        const parts = await this.readXml('[Content_Types].xml');
+        const parts = this.parts || await this.readXml('[Content_Types].xml');
 
         parts['Types']['Override'].push({
             '$':
@@ -246,9 +261,8 @@ export class XmlTool {
                 PartName: `/xl/drawings/drawing${id}.xml`
             }
         })
-
+        this.parts = parts;
         return this.write(`[Content_Types].xml`, parts);
-
     }
 
     private addSheetToParts = async (id: string) => {

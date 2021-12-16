@@ -6,23 +6,26 @@ describe('check xlsxGenerator', () => {
         const sheet1 = await gen.createWorksheet("sheet1");
         const sheet2 = await gen.createWorksheet("sheetWithChart2");
         await sheet2.addTable(getShotData());
-        sheet2.addChart("A1:C3", 'testChart', 'line')
+        await sheet2.addChart("B1:D3", 'testChart line', 'line')
         const sheet3 = await gen.createWorksheet("sheet3");
-        // sheet3.addTable(getLongData());
+        // await sheet3.addTable(getShotData());
+        await sheet3.addTable(getLongData());
+        await sheet3.addChart("A1:C100", 'testChart bar', 'bar')
         const sheet4 = await gen.createWorksheet("sheet4");
         await gen.generate(__dirname + '/test8', 'file');
-        const buffer = await gen.generate(__dirname + '/test9', 'file');
+        // const buffer = await gen.generate(__dirname + '/test9', 'file');
         // console.log(buffer);
     })
 })
 
 const getLongData = () => {
     const data: any[][] = [];//[['h1', 'h2', 'h3']];
-    for (let i = 0; i < 100000; i++) {
+    for (let i = 0; i < 1000; i++) {
         data.push([i, i + 1, i + 2])
     }
     return data;
 }
 const getShotData = () => {
-    return [[0, 1, 2], [1, 2, 3], [4, 5, 6]];
+    return [['h', 'b', 'c', 'd'], [1, 2, 3, 4], [4, 5, 6, 7]];
+    // return [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]];
 }
