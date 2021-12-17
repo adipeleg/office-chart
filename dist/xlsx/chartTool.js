@@ -79,6 +79,9 @@ class ChartTool {
                         }
                     };
                 }
+                else {
+                    delete d['c:tx'];
+                }
                 readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d);
             }
             yield this.addDrawingRel(sheet, sheetName, id);

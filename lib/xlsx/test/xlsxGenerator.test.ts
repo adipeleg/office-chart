@@ -16,7 +16,7 @@ describe('check xlsxGenerator', () => {
             range: 'B1:D3',
             type: 'line',
             rgbColors: ['8ab4f8', 'ff7769'],
-            labels: true,
+            labels: false,
             marker: {
                 size: 4,
                 shape: 'square'

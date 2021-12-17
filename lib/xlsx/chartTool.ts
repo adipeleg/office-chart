@@ -39,7 +39,7 @@ export class ChartTool {
         for (let i = 1; i < rowNum; i++) {
             const data = JSON.parse(JSON.stringify(ser));
             let d = data[0] || data;
-            
+
             d['c:idx'] = i;
             d['c:order'] = i;
 
@@ -69,12 +69,15 @@ export class ChartTool {
                     d['c:marker']['c:spPr']['a:ln']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];
                 }
             }
+
             if (opt.labels) {
                 d['c:tx'] = {
                     'c:strRef': {
                         'c:f': sheetName + '!$A$' + i
                     }
                 }
+            } else {
+                delete d['c:tx'];
             }
 
             readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d)
