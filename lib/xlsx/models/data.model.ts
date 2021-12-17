@@ -1,6 +1,13 @@
 export interface IData {
-    type: string;
-    title: string;
-    data: {};
-    fields: []
+    type: 'line' | 'bar';
+    title: {
+        name: string,
+        color?: string
+    };
+    range: string,
+    rgbColors?: string[],
+    marker?: {
+        size?: number;
+        shape?: string;
+    }
 }

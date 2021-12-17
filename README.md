@@ -24,7 +24,21 @@ const sheet2 = await gen.createWorkshee("sheetWithChart2";
 
 await sheet2.addTable([['h', 'b', 'c', 'd'], [1, 2, 3, 4], [4, 5, 6, 7]]);
 
-await sheet2.addChart("B1:D3", 'testChart line', 'line');
+const opt: IData = {
+            title: {
+                name: 'testChart line',
+                color: '8ab4f8'
+            },
+            range: 'A1:D3',
+            type: 'line',
+            rgbColors: ['8ab4f8', 'ff7769'],
+            marker: {
+                size: 4,
+                shape: 'square'
+            }
+        }
+
+await sheet2.addChart(opt)
 
 const sheet3 = await gen.createWorksheet("sheet3");
 
@@ -32,6 +46,6 @@ await gen.generate(\_\_dirname + '/test', 'file');
 // you can also generate buffer
 ```
 
-#### This is an open source project, you can contribute by going to: https://github.com/adipeleg/office-chart
-
+#### This is an open source project, you can contribute by going to: https://github.com/adipeleg/office-chart.
+#### currently only column and line charts are supported.
 #### Enjoy:)

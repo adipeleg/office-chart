@@ -96,7 +96,8 @@ class XmlTool {
         this.removeTemplateSheets = () => __awaiter(this, void 0, void 0, function* () {
             const wb = yield this.readXml('xl/workbook.xml');
             wb.workbook.sheets.sheet = wb.workbook.sheets.sheet.filter(it => {
-                return 'SheetTemplate' !== it.$.name.toString() && 'ChartTemplate' !== it.$.name.toString();
+                return 'SheetTemplate' !== it.$.name.toString() && 'barTemplate' !== it.$.name.toString() && 'lineTemplate' !== it.$.name.toString();
+                ;
             });
             return this.write('xl/workbook.xml', wb);
         });

@@ -13,39 +13,57 @@ exports.ChartTool = void 0;
 class ChartTool {
     constructor(xmlTool) {
         this.xmlTool = xmlTool;
-        this.addChart = (sheet, sheetName, title, range, id, type) => __awaiter(this, void 0, void 0, function* () {
-            let readChart = yield this.xmlTool.readXml('xl/charts/chart1.xml');
-            readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = title;
-            const chartType = type === 'line' ? 'c:lineChart' : 'c:barChart';
-            if (type === 'line') {
-                readChart['c:chartSpace']['c:chart']['c:plotArea']['c:lineChart'] = JSON.parse(JSON.stringify(readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart']));
-                delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:barChart'];
-                delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:lineChart']['c:barDir'];
+        this.addChart = (sheet, sheetName, opt, id) => __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
+            let readChart = yield this.xmlTool.readXml(`xl/charts/chart${opt.type === 'bar' ? 1 : 2}.xml`);
+            readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = opt.title.name;
+            if (opt.title.color) {
+                readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:rPr']['a:solidFill']['a:srgbClr'].$.val = opt.title.color;
             }
+            const chartType = opt.type === 'line' ? 'c:lineChart' : 'c:barChart';
             let rowNum = 1;
             let lastCol = 'A';
             let firstCol = 'A';
             try {
-                const splitRange = range.split(':');
+                const splitRange = opt.range.split(':');
                 const first = splitRange[0];
                 firstCol = first[0];
                 const sec = splitRange[1];
                 lastCol = sec[0];
                 rowNum = parseInt(sec.substring(1));
             }
-            catch (_a) {
+            catch (_c) {
                 console.log('range is not right');
                 throw Error('range is not right');
             }
             const ser = Object.assign({}, readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser']);
             readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] = [];
             for (let i = 1; i < rowNum; i++) {
-                let d = JSON.parse(JSON.stringify(ser));
+                let d = JSON.parse(JSON.stringify(ser))[0];
                 ;
                 d['c:idx'] = i;
                 d['c:order'] = i;
                 d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$1:$${lastCol}$1`;
                 d['c:val']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$${(i + 1)}:$${lastCol}$${(i + 1)}`;
+                if (opt.rgbColors && opt.rgbColors[i - 1]) {
+                    d['c:spPr']['a:ln']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];
+                    if (d['c:spPr']['a:solidFill']) {
+                        d['c:spPr']['a:solidFill'] = {
+                            'a:srgbClr': {
+                                $: {
+                                    val: opt.rgbColors[i - 1]
+                                }
+                            }
+                        };
+                        console.log(d['c:spPr']['a:solidFill']['a:schemeClr']);
+                    }
+                    if (d['c:marker']) {
+                        d['c:marker']['c:size'].$.val = ((_a = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _a === void 0 ? void 0 : _a.size) || '4';
+                        d['c:marker']['c:symbol'].$.val = ((_b = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _b === void 0 ? void 0 : _b.shape) || 'circle';
+                        d['c:marker']['c:spPr']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];
+                        d['c:marker']['c:spPr']['a:ln']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];
+                    }
+                }
                 readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d);
             }
             yield this.addDrawingRel(sheet, sheetName, id);

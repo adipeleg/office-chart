@@ -1,4 +1,5 @@
 import { ChartTool } from './chartTool';
+import { IData } from './models/data.model';
 import { XmlTool } from './xmlTool';
 export class XlsxGenerator {
     private xmlTool: XmlTool = new XmlTool();
@@ -18,7 +19,7 @@ export class XlsxGenerator {
             addTable: (data: any[][]) => {
                 return this.xmlTool.writeTable(sheet, data, id)
             },
-            addChart: async (range: string, title: string, type: 'line' | 'bar') => await this.chartTool.addChart(sheet, name, title, range, id, type)
+            addChart: async (opt: IData) => await this.chartTool.addChart(sheet, name, opt, id)
         }
     }
 

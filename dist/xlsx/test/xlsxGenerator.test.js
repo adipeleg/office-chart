@@ -17,11 +17,32 @@ describe('check xlsxGenerator', () => {
         const sheet1 = yield gen.createWorksheet("sheet1");
         const sheet2 = yield gen.createWorksheet("sheetWithChart2");
         yield sheet2.addTable(getShotData());
-        yield sheet2.addChart("B1:D3", 'testChart line', 'line');
+        const opt = {
+            title: {
+                name: 'testChart line',
+                color: '8ab4f8'
+            },
+            range: 'A1:D3',
+            type: 'line',
+            rgbColors: ['8ab4f8', 'ff7769'],
+            marker: {
+                size: 4,
+                shape: 'square'
+            }
+        };
+        yield sheet2.addChart(opt);
         const sheet3 = yield gen.createWorksheet("sheet3");
-        // await sheet3.addTable(getShotData());
         yield sheet3.addTable(getLongData());
-        yield sheet3.addChart("A1:C100", 'testChart bar', 'bar');
+        const opt2 = {
+            title: {
+                name: 'testChart bar',
+                color: '2d2e30'
+            },
+            range: 'A1:B4',
+            type: 'bar',
+            rgbColors: ['8ab4f8', 'ff7769', '1d9f08']
+        };
+        yield sheet3.addChart(opt2);
         const sheet4 = yield gen.createWorksheet("sheet4");
         yield gen.generate(__dirname + '/test10', 'file');
         // const buffer = await gen.generate(__dirname + '/test9', 'file');

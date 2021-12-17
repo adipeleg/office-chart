@@ -1,3 +1,4 @@
+import { IData } from '../models/data.model';
 import { XlsxGenerator } from './../xlsxGenerator';
 describe('check xlsxGenerator', () => {
     it('', async () => {
@@ -6,11 +7,34 @@ describe('check xlsxGenerator', () => {
         const sheet1 = await gen.createWorksheet("sheet1");
         const sheet2 = await gen.createWorksheet("sheetWithChart2");
         await sheet2.addTable(getShotData());
-        await sheet2.addChart("B1:D3", 'testChart line', 'line')
+        const opt: IData = {
+            title: {
+                name: 'testChart line',
+                color: '8ab4f8'
+            },
+            range: 'A1:D3',
+            type: 'line',
+            rgbColors: ['8ab4f8', 'ff7769'],
+            marker: {
+                size: 4,
+                shape: 'square'
+            }
+        }
+        await sheet2.addChart(opt)
         const sheet3 = await gen.createWorksheet("sheet3");
-        // await sheet3.addTable(getShotData());
+
         await sheet3.addTable(getLongData());
-        await sheet3.addChart("A1:C100", 'testChart bar', 'bar')
+        const opt2: IData = {
+            title: {
+                name: 'testChart bar',
+                color: '2d2e30'
+            },
+            range: 'A1:B4',
+            type: 'bar',
+            rgbColors: ['8ab4f8', 'ff7769', '1d9f08']
+
+        }
+        await sheet3.addChart(opt2)
         const sheet4 = await gen.createWorksheet("sheet4");
         await gen.generate(__dirname + '/test10', 'file');
         // const buffer = await gen.generate(__dirname + '/test9', 'file');
