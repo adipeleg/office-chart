@@ -49,5 +49,5 @@ await gen.generate(\_\_dirname + '/test', 'file');
 ```
 
 #### This is an open source project, you can contribute by going to: https://github.com/adipeleg/office-chart.
-#### currently only column and line charts are supported.
+#### currently only column, line, pie and scatter charts are supported.
 #### Enjoy:)

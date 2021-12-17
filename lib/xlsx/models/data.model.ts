@@ -1,5 +1,5 @@
 export interface IData {
-    type: 'line' | 'bar';
+    type: 'line' | 'bar' | 'pie' | 'scatter';
     title: {
         name: string,
         color?: string,

@@ -109,7 +109,11 @@ export class XmlTool {
         const wb = await this.readXml('xl/workbook.xml');
 
         wb.workbook.sheets.sheet = wb.workbook.sheets.sheet.filter(it => {
-            return 'SheetTemplate' !== it.$.name.toString() && 'barTemplate' !== it.$.name.toString() && 'lineTemplate' !== it.$.name.toString();;
+            return 'SheetTemplate' !== it.$.name.toString() &&
+                'barTemplate' !== it.$.name.toString() &&
+                'lineTemplate' !== it.$.name.toString() &&
+                'pieTemplate' !== it.$.name.toString() &&
+                'scatterTemplate' !== it.$.name.toString();
         })
 
         return this.write('xl/workbook.xml', wb);
