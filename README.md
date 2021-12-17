@@ -1,16 +1,37 @@
-<h1>Create xlsx with multi worksheets and charts</h1>
-<!-- <h2></h2> -->
+# Create xlsx with multi worksheets and charts
 
-#how to download? <br/>
+Node.js excel chart builder
+
+## Quick start
+
+Install
+
+```bash
 npm install office-chart
+```
 
-example </br>
-const gen = new XlsxGenerator(); </br>
+Generate and write chart to file
 
-await gen.createWorkbook(); </br>
-const sheet1 = await gen.createWorksheet("sheet1"); </br>
-const sheet2 = await gen.createWorkshee("sheetWithChart2"; </br>
-await sheet2.addTable([['h', 'b', 'c', 'd'], [1, 2, 3, 4], [4, 5, 6, 7]]);</br>
-await sheet2.addChart("B1:D3", 'testChart line', 'line')</br>
-const sheet3 = await gen.createWorksheet("sheet3");</br>
+```js
+
+const gen = new XlsxGenerator();
+
+await gen.createWorkbook();
+
+const sheet1 = await gen.createWorksheet("sheet1");
+
+const sheet2 = await gen.createWorkshee("sheetWithChart2";
+
+await sheet2.addTable([['h', 'b', 'c', 'd'], [1, 2, 3, 4], [4, 5, 6, 7]]);
+
+await sheet2.addChart("B1:D3", 'testChart line', 'line');
+
+const sheet3 = await gen.createWorksheet("sheet3");
+
 await gen.generate(\_\_dirname + '/test', 'file');
+// you can also generate buffer
+```
+
+#### This is an open source project, you can contribute by going to: https://github.com/adipeleg/office-chart
+
+#### Enjoy:)
