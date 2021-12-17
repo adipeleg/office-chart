@@ -10,11 +10,13 @@ describe('check xlsxGenerator', () => {
         const opt: IData = {
             title: {
                 name: 'testChart line',
-                color: '8ab4f8'
+                color: '8ab4f8',
+                size: 5000
             },
-            range: 'A1:D3',
+            range: 'B1:D3',
             type: 'line',
             rgbColors: ['8ab4f8', 'ff7769'],
+            labels: true,
             marker: {
                 size: 4,
                 shape: 'square'
@@ -50,6 +52,6 @@ const getLongData = () => {
     return data;
 }
 const getShotData = () => {
-    return [['h', 'b', 'c', 'd'], [1, 2, 3, 4], [4, 5, 6, 7]];
+    return [['h', 'b', 'c', 'd'], ['tot', 2, 3, 4], ['sos', 5, 6, 7]];
     // return [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]];
 }

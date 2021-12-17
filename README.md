@@ -22,16 +22,18 @@ const sheet1 = await gen.createWorksheet("sheet1");
 
 const sheet2 = await gen.createWorkshee("sheetWithChart2";
 
-await sheet2.addTable([['h', 'b', 'c', 'd'], [1, 2, 3, 4], [4, 5, 6, 7]]);
+await sheet2.addTable([['h', 'b', 'c', 'd'], ['label1', 2, 3, 4], ['label2', 5, 6, 7]]);
 
 const opt: IData = {
             title: {
                 name: 'testChart line',
-                color: '8ab4f8'
+                color: '8ab4f8',
+                size: 5000
             },
-            range: 'A1:D3',
+            range: 'B1:D3',
             type: 'line',
             rgbColors: ['8ab4f8', 'ff7769'],
+            labels: true, //table contains labels
             marker: {
                 size: 4,
                 shape: 'square'

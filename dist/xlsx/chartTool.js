@@ -20,6 +20,9 @@ class ChartTool {
             if (opt.title.color) {
                 readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:rPr']['a:solidFill']['a:srgbClr'].$.val = opt.title.color;
             }
+            if (opt.title.size) {
+                readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:rPr'].$.sz = opt.title.size;
+            }
             const chartType = opt.type === 'line' ? 'c:lineChart' : 'c:barChart';
             let rowNum = 1;
             let lastCol = 'A';
@@ -55,13 +58,19 @@ class ChartTool {
                                 }
                             }
                         };
-                        console.log(d['c:spPr']['a:solidFill']['a:schemeClr']);
                     }
                     if (d['c:marker']) {
                         d['c:marker']['c:size'].$.val = ((_a = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _a === void 0 ? void 0 : _a.size) || '4';
                         d['c:marker']['c:symbol'].$.val = ((_b = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _b === void 0 ? void 0 : _b.shape) || 'circle';
                         d['c:marker']['c:spPr']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];
                         d['c:marker']['c:spPr']['a:ln']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];
+                    }
+                    if (opt.labels) {
+                        d['c:tx'] = {
+                            'c:strRef': {
+                                'c:f': sheetName + '!$A$' + i
+                            }
+                        };
                     }
                 }
                 readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d);
