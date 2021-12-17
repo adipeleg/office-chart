@@ -23,7 +23,7 @@ describe('check xlsxGenerator', () => {
         yield sheet3.addTable(getLongData());
         yield sheet3.addChart("A1:C100", 'testChart bar', 'bar');
         const sheet4 = yield gen.createWorksheet("sheet4");
-        yield gen.generate(__dirname + '/test8', 'file');
+        yield gen.generate(__dirname + '/test10', 'file');
         // const buffer = await gen.generate(__dirname + '/test9', 'file');
         // console.log(buffer);
     }));

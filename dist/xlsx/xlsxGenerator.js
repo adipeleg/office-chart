@@ -10,10 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.XlsxGenerator = void 0;
+const chartTool_1 = require("./chartTool");
 const xmlTool_1 = require("./xmlTool");
 class XlsxGenerator {
     constructor() {
         this.xmlTool = new xmlTool_1.XmlTool();
+        this.chartTool = new chartTool_1.ChartTool(this.xmlTool);
         this.createWorkbook = () => __awaiter(this, void 0, void 0, function* () {
             return this.xmlTool.readXlsx();
         });
@@ -27,7 +29,7 @@ class XlsxGenerator {
                 addTable: (data) => {
                     return this.xmlTool.writeTable(sheet, data, id);
                 },
-                addChart: (range, title, type) => __awaiter(this, void 0, void 0, function* () { return yield this.xmlTool.addChart(sheet, name, title, range, id, type); })
+                addChart: (range, title, type) => __awaiter(this, void 0, void 0, function* () { return yield this.chartTool.addChart(sheet, name, title, range, id, type); })
             };
         });
         this.generate = (file, type) => __awaiter(this, void 0, void 0, function* () {

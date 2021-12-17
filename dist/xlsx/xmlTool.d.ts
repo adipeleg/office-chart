@@ -18,12 +18,6 @@ export declare class XmlTool {
     removeTemplateSheets: () => Promise<void>;
     writeTable: (sheet: any, data: any[][], id: string) => Promise<void>;
     private addRow;
-    addChart: (sheet: any, sheetName: string, title: string, range: string, id: string, type: 'line' | 'bar') => Promise<void>;
-    private addDrawingRel;
-    private addChartToDraw;
-    private addChartToSheetRel;
-    private addChartToSheet;
-    private addChartToParts;
     private addSheetToParts;
     private getColName;
     private ColToNum;

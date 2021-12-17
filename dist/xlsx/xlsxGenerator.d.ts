@@ -1,6 +1,7 @@
 /// <reference types="node" />
 export declare class XlsxGenerator {
     private xmlTool;
+    private chartTool;
     createWorkbook: () => Promise<void>;
     createWorksheet: (name: string) => Promise<{
         data: any;
