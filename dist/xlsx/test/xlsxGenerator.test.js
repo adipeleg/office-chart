@@ -21,7 +21,7 @@ describe('check xlsxGenerator', () => {
             title: {
                 name: 'testChart line',
                 color: '8ab4f8',
-                size: 5000
+                size: 3000
             },
             range: 'B1:D3',
             type: 'line',
@@ -46,6 +46,41 @@ describe('check xlsxGenerator', () => {
         };
         yield sheet3.addChart(opt2);
         const sheet4 = yield gen.createWorksheet("sheet4");
+        yield sheet4.addTable(getShotData());
+        const optPie = {
+            title: {
+                name: 'testChart pie',
+                color: '8ab4f8',
+                size: 3000
+            },
+            range: 'B1:D3',
+            type: 'pie',
+            rgbColors: ['8ab4f8', 'ff7769'],
+            labels: true,
+            marker: {
+                size: 4,
+                shape: 'square'
+            }
+        };
+        yield sheet4.addChart(optPie);
+        const sheet5 = yield gen.createWorksheet("sheet5");
+        yield sheet5.addTable(getShotData());
+        const optScatter = {
+            title: {
+                name: 'testChart scatter',
+                color: '8ab4f8',
+                size: 3000
+            },
+            range: 'B1:D3',
+            type: 'scatter',
+            rgbColors: ['8ab4f8', 'ff7769'],
+            labels: true,
+            marker: {
+                size: 4,
+                shape: 'square'
+            }
+        };
+        yield sheet5.addChart(optScatter);
         yield gen.generate(__dirname + '/test10', 'file');
         // const buffer = await gen.generate(__dirname + '/test9', 'file');
         // console.log(buffer);

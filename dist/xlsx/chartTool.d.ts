@@ -5,6 +5,7 @@ export declare class ChartTool {
     private parts;
     constructor(xmlTool: XmlTool);
     addChart: (sheet: any, sheetName: string, opt: IData, id: string) => Promise<void>;
+    private getChartNum;
     private addDrawingRel;
     private addChartToDraw;
     private addChartToSheetRel;
