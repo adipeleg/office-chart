@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const xlsxGenerator_1 = require("./../xlsxGenerator");
 describe('check xlsxGenerator', () => {
-    it('', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('test create xlsx with multi sheets and charts', () => __awaiter(void 0, void 0, void 0, function* () {
         const gen = new xlsxGenerator_1.XlsxGenerator();
         yield gen.createWorkbook();
         const sheet1 = yield gen.createWorksheet("sheet1");

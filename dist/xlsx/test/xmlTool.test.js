@@ -12,13 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const xmlTool_1 = require("../xmlTool");
-// var XmlTool = require("../xmlTool");
 const fs_1 = __importDefault(require("fs"));
+const xmlTool_1 = require("../../xmlTool");
 xdescribe('check xmlTool', () => {
     it('', () => __awaiter(void 0, void 0, void 0, function* () {
         const tool = new xmlTool_1.XmlTool();
-        yield tool.readXlsx();
+        yield tool.readOriginal('xlsx');
         const res = yield tool.readXml('xl/workbook.xml');
         res.workbook.sheets = {
             sheet: [
