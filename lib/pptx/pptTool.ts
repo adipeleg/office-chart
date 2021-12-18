@@ -1,4 +1,5 @@
 import { XmlTool } from "../xmlTool";
+import { ITextModel } from "./models/text.model";
 
 export class PptTool {
     constructor(private xmlTool: XmlTool) { }
@@ -45,7 +46,6 @@ export class PptTool {
 
     private addSlidePPTRels = async (id: number) => {
         const pptRel = await this.xmlTool.readXml('ppt/_rels/presentation.xml.rels');
-        // console.log('pptRel', pptRel.Relationships.Relationship)
         const relId = pptRel.Relationships.Relationship.length + 1;
         pptRel.Relationships.Relationship.push({
             '$':
@@ -132,7 +132,51 @@ export class PptTool {
     }
 
 
-    public addText = (text: string) => {
+    public addTitle = async (slide, id: number, text: string, opt?: ITextModel) => {
+        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:txBody']['a:p']['a:r']['a:t'] = text;
+        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.x = opt?.x || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.x;
+        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.y = opt?.y || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.y;
+        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:ext'].$.cx = opt?.cx || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:ext'].$.cx;
+        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:ext'].$.cy = opt?.cy || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:ext'].$.cy;
+        this.addColorAndSize(slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0], opt);
+        return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
+    }
 
+    public addSubTitle = async (slide, id: number, text: string, opt?: ITextModel) => {
+        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:txBody']['a:p']['a:r']['a:t'] = text;
+        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.x = opt?.x || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.x;
+        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.y = opt?.y || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.y;
+        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:ext'].$.cx = opt?.cx || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:ext'].$.cx;
+        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:ext'].$.cy = opt?.cy || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:ext'].$.cy;
+        this.addColorAndSize(slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1], opt);
+        return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
+    }
+
+    public addText = async (slide, id: number, text: string, opt?: ITextModel) => {
+        const copy = JSON.parse(JSON.stringify(slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]));
+        copy['p:txBody']['a:p']['a:r']['a:t'] = text;
+        this.addColorAndSize(copy, opt);
+        copy['p:spPr']['a:xfrm']['a:off'].$.x = opt?.x || copy['p:spPr']['a:xfrm']['a:off'].$.x;
+        copy['p:spPr']['a:xfrm']['a:off'].$.y = opt?.y || 3190175;
+        copy['p:spPr']['a:xfrm']['a:ext'].$.cx = opt?.cx || copy['p:spPr']['a:xfrm']['a:ext'].$.cx;
+        copy['p:spPr']['a:xfrm']['a:ext'].$.cy = opt?.cy || copy['p:spPr']['a:xfrm']['a:ext'].$.cy;
+        slide['p:sld']['p:cSld']['p:spTree']['p:sp'].push(copy);
+        return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
+    }
+
+    private addColorAndSize = (data, opt: ITextModel) => {
+        if (opt?.color) {
+            data['p:txBody']['a:p']['a:r']['a:rPr'] = {
+                $: { sz: "1500" },
+                'a:solidFill': { 'a:srgbClr': { $: { val: opt.color } } }
+            };
+        }
+        if (opt?.size) {
+            if (data['p:txBody']['a:p']['a:r']['a:rPr']) {
+                data['p:txBody']['a:p']['a:r']['a:rPr'].$.sz = opt.size.toString();
+            } else {
+                data['p:txBody']['a:p']['a:r']['a:rPr'] = { $: { sz: opt.size.toString() } };
+            }
+        }
     }
 }

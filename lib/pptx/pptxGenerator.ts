@@ -1,5 +1,6 @@
 import { PptTool } from './pptTool';
 import { XmlTool } from "../xmlTool";
+import { ITextModel } from './models/text.model';
 
 export class PptxGenetator {
     private xmlTool: XmlTool = new XmlTool();
@@ -15,7 +16,9 @@ export class PptxGenetator {
         return {
             data: slide,
             id: id,
-            addText: async (text: string) => await this.pptTool.addText(text)
+            addTitle: async (text: string, opt?: ITextModel) => await this.pptTool.addTitle(slide, id, text, opt),
+            addSubTitle: async (text: string, opt?: ITextModel) => await this.pptTool.addSubTitle(slide, id, text, opt),
+            addText: async (text: string, opt?: ITextModel) => await this.pptTool.addText(slide, id, text, opt)
             // addTable: (data: any[][]) => {
             //     return this.xmlTool.writeTable(sheet, data, id)
             // },
