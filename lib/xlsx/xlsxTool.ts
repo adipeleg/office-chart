@@ -1,56 +1,10 @@
-import xml2js from 'xml2js';
-import JSZip from "jszip";
-import fs from 'fs';
+import { XmlTool } from "../xmlTool";
 
-export class XmlTool {
-    private zip: JSZip;
-    private parser: xml2js.Parser;
-    private builder: xml2js.Builder;
-    private parts: any;
-
-    constructor() {
-        this.zip = new JSZip();
-        this.parser = new xml2js.Parser({ explicitArray: false });
-        this.builder = new xml2js.Builder();
-    }
-
-    public getZip = (): JSZip => {
-        return this.zip;
-    }
-
-    public readXlsx = async () => {
-        let path = __dirname + "/templates/template.xlsx";
-
-        await new Promise((resolve, reject) => fs.readFile(path, async (err, data) => {
-            if (err) {
-                console.error(`Template ${path} not read: ${err}`);
-                reject(err);
-                return;
-            };
-            return await this.zip.loadAsync(data).then(d => {
-                resolve(d);
-            })
-        }));
-    }
-
-    public readXml = async (file: string) => {
-        return this.zip.file(file).async('string').then(data => {
-            return this.parser.parseStringPromise(data);
-        })
-    }
-
-    public write = async (filename: string, data: any) => {
-        var xml = this.builder.buildObject(data);
-        this.zip.file(filename, Buffer.from(xml), { base64: true });
-    }
-
-    public writeStr = async (filename: string, data: string) => {
-        // var xml = this.builder.buildObject(data);
-        this.zip.file(filename, Buffer.from(data), { base64: true });
-    }
+export class XlsxTool {
+    constructor(private xmlTool: XmlTool) { }
 
     public addSheetToWb = async (name: string) => {
-        const wb = await this.readXml('xl/workbook.xml');
+        const wb = await this.xmlTool.readXml('xl/workbook.xml');
         let count: string;
 
         if (!Array.isArray(wb.workbook.sheets.sheet)) {
@@ -69,16 +23,16 @@ export class XmlTool {
             });
         }
         await this.addSheetToParts(count);
-        this.write('xl/workbook.xml', wb);
+        this.xmlTool.write('xl/workbook.xml', wb);
         return count;
     }
 
     public createSheet = async (id: string) => {
-        const resSheet = await this.readXml('xl/worksheets/sheet1.xml');
+        const resSheet = await this.xmlTool.readXml('xl/worksheets/sheet1.xml');
 
         delete resSheet.worksheet.drawing
 
-        const WbRel = await this.readXml('xl/_rels/workbook.xml.rels');
+        const WbRel = await this.xmlTool.readXml('xl/_rels/workbook.xml.rels');
         WbRel.Relationships.Relationship.push({
             '$':
             {
@@ -90,23 +44,13 @@ export class XmlTool {
         })
 
 
-        this.write(`xl/worksheets/sheet${id}.xml`, resSheet);
-        this.write('xl/_rels/workbook.xml.rels', WbRel);
+        this.xmlTool.write(`xl/worksheets/sheet${id}.xml`, resSheet);
+        this.xmlTool.write('xl/_rels/workbook.xml.rels', WbRel);
         return resSheet;
     }
 
-    public generateBuffer = async (): Promise<Buffer> => {
-        return this.zip.generateAsync({ type: 'nodebuffer' });
-    }
-
-    public generateFile = async (name: string) => {
-        const buf = await this.generateBuffer();
-        fs.writeFileSync(name + '.xlsx', buf);
-        return buf;
-    }
-
     public removeTemplateSheets = async () => {
-        const wb = await this.readXml('xl/workbook.xml');
+        const wb = await this.xmlTool.readXml('xl/workbook.xml');
 
         wb.workbook.sheets.sheet = wb.workbook.sheets.sheet.filter(it => {
             return 'SheetTemplate' !== it.$.name.toString() &&
@@ -116,11 +60,11 @@ export class XmlTool {
                 'scatterTemplate' !== it.$.name.toString();
         })
 
-        return this.write('xl/workbook.xml', wb);
+        return this.xmlTool.write('xl/workbook.xml', wb);
     }
 
     public writeTable = async (sheet: any, data: any[][], id: string) => {
-        const sheetWithTable = await this.readXml('xl/worksheets/sheet2.xml');
+        const sheetWithTable = await this.xmlTool.readXml('xl/worksheets/sheet2.xml');
         const rowTemplate = sheetWithTable.worksheet.sheetData.row[0];
         const header = data.shift();
 
@@ -131,7 +75,7 @@ export class XmlTool {
         })
         sheet.worksheet.sheetData = { row: rows };
 
-        return this.write(`xl/worksheets/sheet${id}.xml`, sheet);
+        return this.xmlTool.write(`xl/worksheets/sheet${id}.xml`, sheet);
     }
 
     private addRow(rowData: any[], rowTemplate: any, index: number) {
@@ -151,7 +95,7 @@ export class XmlTool {
     }
 
     private addSheetToParts = async (id: string) => {
-        const parts = await this.readXml('[Content_Types].xml');
+        const parts = await this.xmlTool.readXml('[Content_Types].xml');
 
         parts['Types']['Override'].push({
             '$':
@@ -162,7 +106,7 @@ export class XmlTool {
             }
         })
 
-        return this.write(`[Content_Types].xml`, parts);
+        return this.xmlTool.write(`[Content_Types].xml`, parts);
     }
 
     private getColName = (n: number) => {
@@ -175,4 +119,5 @@ export class XmlTool {
         var abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return abc.indexOf(char);
     }
+
 }

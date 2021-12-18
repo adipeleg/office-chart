@@ -1,5 +1,5 @@
 import { IData } from "./models/data.model";
-import { XmlTool } from "./xmlTool";
+import { XmlTool } from "../xmlTool";
 
 export class ChartTool {
     private parts: any;

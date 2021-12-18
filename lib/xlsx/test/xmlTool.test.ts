@@ -1,11 +1,10 @@
-import { XmlTool } from '../xmlTool';
-// var XmlTool = require("../xmlTool");
 import fs from 'fs';
+import { XmlTool } from '../../xmlTool';
 xdescribe('check xmlTool', () => {
 
     it('', async () => {
         const tool = new XmlTool();
-        await tool.readXlsx();
+        await tool.readOriginal('xlsx');
         const res = await tool.readXml('xl/workbook.xml');
 
         res.workbook.sheets = {

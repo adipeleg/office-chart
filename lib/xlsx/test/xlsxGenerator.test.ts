@@ -1,7 +1,7 @@
 import { IData } from '../models/data.model';
 import { XlsxGenerator } from './../xlsxGenerator';
-describe('check xlsxGenerator', () => {
-    it('', async () => {
+xdescribe('check xlsxGenerator', () => {
+    it('test create xlsx with multi sheets and charts', async () => {
         const gen = new XlsxGenerator();
         await gen.createWorkbook();
         const sheet1 = await gen.createWorksheet("sheet1");
