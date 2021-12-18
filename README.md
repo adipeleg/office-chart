@@ -1,5 +1,8 @@
 # Create xlsx with multi worksheets and charts
 
+### Create PPTX (only text for now)
+
+#
 Node.js excel chart builder
 
 ## Quick start
@@ -10,7 +13,7 @@ Install
 npm install office-chart
 ```
 
-Generate and write chart to file
+Generate xlsx and write chart to file
 
 ```js
 
@@ -47,7 +50,35 @@ const sheet3 = await gen.createWorksheet("sheet3");
 await gen.generate(\_\_dirname + '/test', 'file');
 // you can also generate buffer
 ```
+#
+ Generate ppt with slides and text
+#
+
+```js
+const gen = new PptxGenetator();
+
+await gen.createPresentation();
+
+const slide = await gen.createSlide();
+
+slide.addTitle("this is title", {
+  x: "0",
+  y: "0",
+  color: "FF0000",
+  size: 4000,
+});
+
+slide.addSubTitle("this is subtitle");
+
+slide.addText("this is text", {
+  color: "FF0000",
+});
+
+await gen.generate(__dirname + "/test10", "file");
+```
 
 #### This is an open source project, you can contribute by going to: https://github.com/adipeleg/office-chart.
+
 #### currently only column, line, pie and scatter charts are supported.
+
 #### Enjoy:)
