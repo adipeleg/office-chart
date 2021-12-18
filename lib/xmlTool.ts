@@ -28,7 +28,6 @@ export class XmlTool {
                 return;
             };
             return await this.zip.loadAsync(data).then(d => {
-                console.log(d)
                 resolve(d);
             })
         }));
