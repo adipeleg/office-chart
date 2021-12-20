@@ -12,12 +12,20 @@
     "url": "https://github.com/adipeleg/office-chart.git"
   },
   "keywords": [
+    "office-chart",
     "xlsx",
     "chart",
+    "charts",
     "multisheet",
     "worksheet",
     "pptx",
-    "node"
+    "node",
+    "office",
+    "microsoft",
+    "excel",
+    "powerpoint",
+    "create",
+    "generate"
   ],
   "scripts": {
     "test": "jest",

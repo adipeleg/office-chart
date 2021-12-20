@@ -24,7 +24,7 @@ await gen.createWorkbook();
 
 const sheet1 = await gen.createWorksheet("sheet1");
 
-const sheet2 = await gen.createWorkshee("sheetWithChart2";
+const sheet2 = await gen.createWorksheet("sheetWithChart2";
 
 const header = ['h', 'b', 'c', 'd'];
 const row1 = ['label1', 2, 3, 4];
