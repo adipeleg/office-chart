@@ -3,6 +3,7 @@
 ### Create PPTX (only text for now)
 
 #
+
 Node.js excel chart builder
 
 ## Quick start
@@ -25,7 +26,11 @@ const sheet1 = await gen.createWorksheet("sheet1");
 
 const sheet2 = await gen.createWorkshee("sheetWithChart2";
 
-await sheet2.addTable([['h', 'b', 'c', 'd'], ['label1', 2, 3, 4], ['label2', 5, 6, 7]]);
+const header = ['h', 'b', 'c', 'd'];
+const row1 = ['label1', 2, 3, 4];
+const row2 = ['label2', 5, 6, 7];
+
+await sheet2.addTable([header, row1, row2]);
 
 const opt: IData = {
             title: {
@@ -39,7 +44,7 @@ const opt: IData = {
             labels: true, //table contains labels
             marker: {
                 size: 4,
-                shape: 'square'
+                shape: 'square' //marker shapes, can be circle, diamond, star
             }
         }
 
@@ -47,11 +52,14 @@ await sheet2.addChart(opt)
 
 const sheet3 = await gen.createWorksheet("sheet3");
 
-await gen.generate(\_\_dirname + '/test', 'file');
+await gen.generate(__dirname + '/test', 'file');
 // you can also generate buffer
 ```
+
 #
- Generate ppt with slides and text
+
+Generate ppt with slides and text
+
 #
 
 ```js
@@ -74,11 +82,11 @@ slide.addText("this is text", {
   color: "FF0000",
 });
 
-await gen.generate(__dirname + "/test10", "file");
+await gen.generate(__dirname + "/test2", "file");
 ```
 
 #### This is an open source project, you can contribute by going to: https://github.com/adipeleg/office-chart.
 
 #### currently only column, line, pie and scatter charts are supported.
 
-#### Enjoy:)
+#### Enjoy and don't forget to add a star :) 
