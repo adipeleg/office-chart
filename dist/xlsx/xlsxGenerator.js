@@ -31,7 +31,7 @@ class XlsxGenerator {
                 addTable: (data) => {
                     return this.xlsxTool.writeTable(sheet, data, id);
                 },
-                addChart: (opt) => __awaiter(this, void 0, void 0, function* () { return yield this.chartTool.addChart(sheet, name, opt, id); })
+                addChart: (opt) => __awaiter(this, void 0, void 0, function* () { return this.chartTool.addChart(sheet, name, opt, id); })
             };
         });
         this.generate = (file, type) => __awaiter(this, void 0, void 0, function* () {

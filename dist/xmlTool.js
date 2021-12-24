@@ -31,6 +31,7 @@ class XmlTool {
                 }
                 ;
                 return yield this.zip.loadAsync(data).then(d => {
+                    console.log(d);
                     resolve(d);
                 });
             })));
@@ -40,9 +41,19 @@ class XmlTool {
                 return this.parser.parseStringPromise(data);
             });
         });
+        this.readXml2 = (file) => __awaiter(this, void 0, void 0, function* () {
+            return this.zip.file(file).async('arraybuffer').then(data => {
+                console.log('readXml', file, data);
+                return this.parser.parseStringPromise(data);
+            });
+        });
         this.write = (filename, data) => __awaiter(this, void 0, void 0, function* () {
             var xml = this.builder.buildObject(data);
             this.zip.file(filename, Buffer.from(xml), { base64: true });
+        });
+        this.writeBuffer = (filename, data) => __awaiter(this, void 0, void 0, function* () {
+            // var xml = this.builder.buildObject(data);
+            this.zip.file(filename, data, { base64: true });
         });
         this.writeStr = (filename, data) => __awaiter(this, void 0, void 0, function* () {
             // var xml = this.builder.buildObject(data);

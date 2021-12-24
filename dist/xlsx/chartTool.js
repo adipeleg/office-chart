@@ -14,8 +14,32 @@ class ChartTool {
     constructor(xmlTool) {
         this.xmlTool = xmlTool;
         this.addChart = (sheet, sheetName, opt, id) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
             let readChart = yield this.xmlTool.readXml(`xl/charts/chart${this.getChartNum(opt)}.xml`);
+            this.buildChart(readChart, opt, sheetName);
+            if (sheet) {
+                yield this.addDrawingRel(id);
+                yield this.addChartToDraw(id);
+                yield this.addChartToSheetRel(id);
+                yield this.addChartToParts(id);
+                yield this.addChartToSheet(sheet, id);
+                return this.xmlTool.write(`xl/charts/chart${id}.xml`, readChart);
+            }
+            return readChart;
+        });
+        this.getChartNum = (opt) => {
+            switch (opt.type) {
+                case 'bar':
+                    return 1;
+                case 'line':
+                    return 2;
+                case 'pie':
+                    return 3;
+                case 'scatter':
+                    return 4;
+            }
+        };
+        this.buildChart = (readChart, opt, sheetName) => {
+            var _a, _b;
             readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = opt.title.name;
             if (opt.title.color) {
                 readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:rPr']['a:solidFill']['a:srgbClr'].$.val = opt.title.color;
@@ -49,6 +73,10 @@ class ChartTool {
                 if (opt.type !== 'scatter') {
                     d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$1:$${lastCol}$1`;
                     d['c:val']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$${(i + 1)}:$${lastCol}$${(i + 1)}`;
+                    if (opt.hasOwnProperty('data')) {
+                        d['c:cat']['c:strRef']['c:strCache'] = this.buildCache(opt['data'][0], opt.labels);
+                        d['c:val']['c:numRef']['c:numCache'] = this.buildCache(opt['data'][i], opt.labels);
+                    }
                 }
                 else {
                     d['c:xVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$1:$${lastCol}$1`;
@@ -65,7 +93,7 @@ class ChartTool {
                             }
                         };
                     }
-                    if (d['c:marker']) {
+                    if (d['c:marker'] && !opt.hasOwnProperty('data')) {
                         d['c:marker']['c:size'].$.val = ((_a = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _a === void 0 ? void 0 : _a.size) || '4';
                         d['c:marker']['c:symbol'].$.val = ((_b = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _b === void 0 ? void 0 : _b.shape) || 'circle';
                         d['c:marker']['c:spPr']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];
@@ -78,32 +106,35 @@ class ChartTool {
                             'c:f': sheetName + '!$A$' + i
                         }
                     };
+                    if (opt.hasOwnProperty('data')) {
+                        d['c:tx']['c:strRef']['c:strCache'] = {
+                            'c:ptCount': { 'val': '1' },
+                            'c:pt': {
+                                $: { idx: `${i}` },
+                                'c:v': opt['data'][i][0]
+                            }
+                        };
+                    }
                 }
                 else {
                     delete d['c:tx'];
                 }
                 readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d);
             }
-            yield this.addDrawingRel(sheet, sheetName, id);
-            yield this.addChartToDraw(id);
-            yield this.addChartToSheet(sheet, id);
-            yield this.addChartToSheetRel(id);
-            yield this.addChartToParts(id);
-            return this.xmlTool.write(`xl/charts/chart${id}.xml`, readChart);
-        });
-        this.getChartNum = (opt) => {
-            switch (opt.type) {
-                case 'bar':
-                    return 1;
-                case 'line':
-                    return 2;
-                case 'pie':
-                    return 3;
-                case 'scatter':
-                    return 4;
-            }
+            return readChart;
         };
-        this.addDrawingRel = (sheet, sheetName, id) => __awaiter(this, void 0, void 0, function* () {
+        this.buildCache = (rowData, labels) => {
+            const cache = { ['c:ptCount']: { $: { val: `${rowData.length}` } } };
+            cache['c:pt'] = [];
+            for (let i = labels ? 1 : 0; i < rowData.length; i++) {
+                cache['c:pt'].push({
+                    $: { idx: `${i}` },
+                    'c:v': rowData[i]
+                });
+            }
+            return cache;
+        };
+        this.addDrawingRel = (id) => __awaiter(this, void 0, void 0, function* () {
             const drawRel = yield this.xmlTool.readXml('xl/drawings/_rels/drawing2.xml.rels'); //add new chart rel
             drawRel.Relationships.Relationship =
                 {

@@ -9,7 +9,6 @@ export declare class PptTool {
     private addSlideToPPT;
     removeTemplateSlide: () => Promise<void>;
     createSlide: (id: number) => Promise<any>;
-    private addSlideMaster;
     addTitle: (slide: any, id: number, text: string, opt?: ITextModel) => Promise<void>;
     addSubTitle: (slide: any, id: number, text: string, opt?: ITextModel) => Promise<void>;
     addText: (slide: any, id: number, text: string, opt?: ITextModel) => Promise<void>;

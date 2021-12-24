@@ -1,6 +1,6 @@
 # Create xlsx with multi worksheets and charts
 
-### Create PPTX (only text for now)
+### Create PPTX
 
 #
 
@@ -82,11 +82,37 @@ slide.addText("this is text", {
   color: "FF0000",
 });
 
+const header = ["h", "b", "c", "d"];
+const row1 = ["label1", 2, 3, 4];
+const row2 = ["label2", 5, 6, 7];
+
+await slide.addTable([header, row1, row2]);
+
+const opt: IPPTChartData = {
+  title: {
+    name: "testChart line",
+    color: "8ab4f8",
+    size: 3000,
+  },
+  type: "line",
+  data: getShotData(),
+  rgbColors: ["8ab4f8", "ff7769"],
+  labels: true
+};
+
+const slide2 = await gen.createSlide();
+
+await slide2.addChart(opt);
+await slide2.addTitle(null); //remove title
+await slide2.addSubTitle(null); //remove subtitle
+
 await gen.generate(__dirname + "/test2", "file");
 ```
 
 #### This is an open source project, you can contribute by going to: https://github.com/adipeleg/office-chart.
 
-#### currently only column, line, pie and scatter charts are supported.
-
-#### Enjoy and don't forget to add a star :) 
+#
+#### currently only column, line, pie and scatter charts are supported in Xlsx.
+#### currently only line chart is supported in PPTX.
+#
+#### Enjoy and don't forget to add a star :)

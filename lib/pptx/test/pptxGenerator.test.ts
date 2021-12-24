@@ -1,5 +1,4 @@
 import { IPPTChartData } from './../../xlsx/models/data.model';
-import { IData } from '../../xlsx/models/data.model';
 import { PptxGenetator } from './../pptxGenerator';
 describe('create pptx', () => {
 

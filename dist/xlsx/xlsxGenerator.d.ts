@@ -10,7 +10,7 @@ export declare class XlsxGenerator {
         name: string;
         id: string;
         addTable: (data: any[][]) => Promise<void>;
-        addChart: (opt: IData) => Promise<void>;
+        addChart: (opt: IData) => Promise<any>;
     }>;
     generate: (file: string, type: 'file' | 'buffer') => Promise<Buffer>;
 }
