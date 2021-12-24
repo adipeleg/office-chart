@@ -16,7 +16,6 @@ xdescribe('check xmlTool', () => {
 
         const resSheet = await tool.readXml('xl/worksheets/sheet1.xml');
 
-        console.log(resSheet.worksheet.drawing);
         delete resSheet.worksheet.drawing
 
         const WbRel = await tool.readXml('xl/_rels/workbook.xml.rels');

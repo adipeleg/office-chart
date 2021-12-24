@@ -28,7 +28,6 @@ export class XmlTool {
                 return;
             };
             return await this.zip.loadAsync(data).then(d => {
-                console.log(d);
                 resolve(d);
             })
         }));
@@ -42,7 +41,6 @@ export class XmlTool {
 
     public readXml2 = async (file: string) => {
         return this.zip.file(file).async('arraybuffer').then(data => {
-            console.log('readXml', file, data)
             return this.parser.parseStringPromise(data);
         })
     }

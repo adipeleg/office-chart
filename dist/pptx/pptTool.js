@@ -90,7 +90,6 @@ class PptTool {
                 slide['p:sld']['p:cSld']['p:spTree']['p:sp'] = slide['p:sld']['p:cSld']['p:spTree']['p:sp'].filter(it => {
                     return it['p:nvSpPr']['p:nvPr']['p:ph'].$.type !== 'ctrTitle';
                 });
-                console.log('title', slide['p:sld']['p:cSld']['p:spTree']['p:sp']);
                 return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
             }
             slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:txBody']['a:p']['a:r']['a:t'] = text;

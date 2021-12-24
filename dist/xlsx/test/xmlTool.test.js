@@ -26,7 +26,6 @@ xdescribe('check xmlTool', () => {
             ]
         };
         const resSheet = yield tool.readXml('xl/worksheets/sheet1.xml');
-        console.log(resSheet.worksheet.drawing);
         delete resSheet.worksheet.drawing;
         const WbRel = yield tool.readXml('xl/_rels/workbook.xml.rels');
         WbRel.Relationships.Relationship.push({

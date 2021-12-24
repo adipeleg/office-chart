@@ -31,7 +31,6 @@ class XmlTool {
                 }
                 ;
                 return yield this.zip.loadAsync(data).then(d => {
-                    console.log(d);
                     resolve(d);
                 });
             })));
@@ -43,7 +42,6 @@ class XmlTool {
         });
         this.readXml2 = (file) => __awaiter(this, void 0, void 0, function* () {
             return this.zip.file(file).async('arraybuffer').then(data => {
-                console.log('readXml', file, data);
                 return this.parser.parseStringPromise(data);
             });
         });
