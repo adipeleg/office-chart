@@ -27,17 +27,6 @@ export class PptTool {
             }
         )
 
-        // pptParts['Types']['Override'].push(
-        //     {
-        //         '$':
-        //         {
-        //             ContentType:
-        //                 'application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml',
-        //             PartName: `/ppt/slideMasters/slideMaster${id}.xml`
-        //         }
-        //     }
-        // )
-
         await this.xmlTool.write(`[Content_Types].xml`, pptParts);
         const relId = await this.addSlidePPTRels(id);
         await this.addSlideToPPT(relId);
@@ -57,16 +46,6 @@ export class PptTool {
                 Target: `slides/slide${id}.xml`
             }
         })
-
-        // pptRel.Relationships.Relationship.push({
-        //     '$':
-        //     {
-        //         Id: 'rId' + relId,
-        //         Type:
-        //             'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster',
-        //         Target: `slideMasters/slideMaster${id + 1}.xml`
-        //     }
-        // })
 
         this.xmlTool.write(`ppt/_rels/presentation.xml.rels`, pptRel);
         await this.addSlideRels(id);
@@ -111,7 +90,6 @@ export class PptTool {
         ppt['p:presentation']['p:sldIdLst']['p:sldId'] = ppt['p:presentation']['p:sldIdLst']['p:sldId'].filter(slide => {
             return slide.$['r:id'] !== 'rId8' && slide.$['r:id'] !== 'rId9' && slide.$['r:id'] !== 'rId10';
         })
-        // '/ppt/slides/slide1.xml'
 
         return this.xmlTool.write('ppt/presentation.xml', ppt);
     }
@@ -122,19 +100,18 @@ export class PptTool {
         resSlide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:txBody']['a:p']['a:r']['a:t'] = '';
 
         await this.xmlTool.write(`ppt/slides/slide${id}.xml`, resSlide);
-        // await this.addSlideMaster(id);
         return resSlide;
     }
 
-    private addSlideMaster = async (id: number) => {
-        const resMasterSlide = await this.xmlTool.readXml('ppt/slideMasters/slideMaster1.xml');
-        await this.xmlTool.write(`ppt/slideMasters/slideMaster${id}.xml`, resMasterSlide);
-        const resMasterSlideRel = await this.xmlTool.readXml('ppt/slideMasters/_rels/slideMaster1.xml.rels');
-        await this.xmlTool.write(`ppt/slideMasters/_rels/slideMaster${id}.xml.rels`, resMasterSlideRel);
-    }
-
-
     public addTitle = async (slide, id: number, text: string, opt?: ITextModel) => {
+        if (!text) {
+            slide['p:sld']['p:cSld']['p:spTree']['p:sp'] = slide['p:sld']['p:cSld']['p:spTree']['p:sp'].filter(it => {
+                return it['p:nvSpPr']['p:nvPr']['p:ph'].$.type !== 'ctrTitle';
+            })
+            console.log('title', slide['p:sld']['p:cSld']['p:spTree']['p:sp'])
+            return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
+        }
+
         slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:txBody']['a:p']['a:r']['a:t'] = text;
         slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.x = opt?.x || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.x;
         slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.y = opt?.y || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.y;
@@ -145,6 +122,13 @@ export class PptTool {
     }
 
     public addSubTitle = async (slide, id: number, text: string, opt?: ITextModel) => {
+        if (!text) {
+            slide['p:sld']['p:cSld']['p:spTree']['p:sp'] = slide['p:sld']['p:cSld']['p:spTree']['p:sp'].filter(it => {
+                return it['p:nvSpPr']['p:nvPr']['p:ph'].$.type !== 'subTitle';
+            })
+
+            return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
+        }
         slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:txBody']['a:p']['a:r']['a:t'] = text;
         slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.x = opt?.x || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.x;
         slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.y = opt?.y || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.y;

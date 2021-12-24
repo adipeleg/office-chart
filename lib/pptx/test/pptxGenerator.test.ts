@@ -51,13 +51,19 @@ describe('create pptx', () => {
             data: getShotData(),
             rgbColors: ['8ab4f8', 'ff7769'],
             labels: false,
-            // marker: {
-            //     size: 4,
-            //     shape: 'square'
-            // }
         }
         await slide5.addChart(opt);
+        await slide5.addTitle('line chart', {
+            x: '0',
+            y: '0',
+        });
         const slide6 = await gen.createSlide();
+        opt.data = getShotDataLabels();
+        opt.labels = true;
+        opt.title.name = 'with labels';
+        await slide6.addChart(opt);
+        await slide6.addTitle(null);
+        await slide6.addSubTitle(null);
         await gen.generate(__dirname + '/test11', 'file');
     })
 })
@@ -68,7 +74,7 @@ const getShotData = () => {
 
 
 const getShotDataLabels = () => {
-    return [['h', 'b', 'c', 'd', 'e'], ['label1', 2, 3, 4, 5], ['label2', 5, 6, 7, 8]];
+    return [['h', 'b', 'c', 'd', 'e'], ['label1', 2, 3, 4, 5], ['label2', 5, 6, 7, 8], ['label3', 4, 6, 8, 10]];
 }
 
 const getShotData2 = () => {
