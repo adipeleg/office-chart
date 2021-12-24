@@ -15,7 +15,7 @@ export class PptxGenetator {
     public createSlide = async () => {
         const id = await this.pptTool.addSlidePart();
         const slide = await this.pptTool.createSlide(id);
-        console.log(id)
+        
         return {
             data: slide,
             id: id,
