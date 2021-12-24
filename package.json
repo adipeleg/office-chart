@@ -1,6 +1,6 @@
 {
   "name": "office-chart",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "create office xlsx with tables and charts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
