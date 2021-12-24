@@ -20,7 +20,8 @@ export class PptGraphicTool {
         })
         slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['a:graphic']['a:graphicData']['a:tbl']['a:tr'] = rows;
 
-        for (let i = 0; i < header.length - 4; i++) {
+        slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['a:graphic']['a:graphicData']['a:tbl']['a:tblGrid']['a:gridCol'] = [];
+        for (let i = 0; i < header.length; i++) {
             slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['a:graphic']['a:graphicData']['a:tbl']['a:tblGrid']['a:gridCol'].push({ '$': { w: '2381250' } })
         }
 

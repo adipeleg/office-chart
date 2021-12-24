@@ -35,12 +35,23 @@ describe('create pptx', () => {
         const slide2 = await gen.createSlide();
         await slide2.addTable(getShotData());
         const slide3 = await gen.createSlide();
+        await slide3.addTable(getShotData2());
+
         const slide4 = await gen.createSlide();
+        await slide4.addTable(getShotData3());
+        const slide5 = await gen.createSlide();
         await gen.generate(__dirname + '/test11', 'file');
     })
 })
 
 const getShotData = () => {
-    // return [['h', 'b', 'c', 'd', 'e'], [1, 2, 3, 4, 5], [4, 5, 6, 7, 8]];
+    return [['h', 'b', 'c', 'd', 'e'], [1, 2, 3, 4, 5], [4, 5, 6, 7, 8]];
+}
+
+const getShotData2 = () => {
+    return [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]];
+}
+
+const getShotData3 = () => {
     return [[1, 2], [5, 6], [9, 10]];
 }
