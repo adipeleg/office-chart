@@ -11,10 +11,10 @@ export class PptTool {
         })
 
         const slidesIds = slides.map(slide => {
-            return slide.$.PartName.split('/ppt/slides/slide')[1].split('.xml')[0];
+            return parseInt(slide.$.PartName.split('/ppt/slides/slide')[1].split('.xml')[0], 10);
         })
 
-        const id = Math.max(slidesIds) + 1;
+        const id = Math.max(...slidesIds) + 1;
 
         pptParts['Types']['Override'].push(
             {
@@ -41,6 +41,7 @@ export class PptTool {
         await this.xmlTool.write(`[Content_Types].xml`, pptParts);
         const relId = await this.addSlidePPTRels(id);
         await this.addSlideToPPT(relId);
+
         return id;
     }
 
@@ -134,20 +135,20 @@ export class PptTool {
 
     public addTitle = async (slide, id: number, text: string, opt?: ITextModel) => {
         slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:txBody']['a:p']['a:r']['a:t'] = text;
-        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.x = opt?.x || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.x;
-        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.y = opt?.y || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.y;
-        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:ext'].$.cx = opt?.cx || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:ext'].$.cx;
-        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:ext'].$.cy = opt?.cy || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:ext'].$.cy;
+        // slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.x = opt?.x || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.x;
+        // slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.y = opt?.y || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:off'].$.y;
+        // slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:ext'].$.cx = opt?.cx || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:ext'].$.cx;
+        // slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:ext'].$.cy = opt?.cy || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0]['p:spPr']['a:xfrm']['a:ext'].$.cy;
         this.addColorAndSize(slide['p:sld']['p:cSld']['p:spTree']['p:sp'][0], opt);
         return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
     }
 
     public addSubTitle = async (slide, id: number, text: string, opt?: ITextModel) => {
         slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:txBody']['a:p']['a:r']['a:t'] = text;
-        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.x = opt?.x || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.x;
-        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.y = opt?.y || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.y;
-        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:ext'].$.cx = opt?.cx || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:ext'].$.cx;
-        slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:ext'].$.cy = opt?.cy || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:ext'].$.cy;
+        // slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.x = opt?.x || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.x;
+        // slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.y = opt?.y || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:off'].$.y;
+        // slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:ext'].$.cx = opt?.cx || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:ext'].$.cx;
+        // slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:ext'].$.cy = opt?.cy || slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]['p:spPr']['a:xfrm']['a:ext'].$.cy;
         this.addColorAndSize(slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1], opt);
         return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
     }
@@ -156,10 +157,10 @@ export class PptTool {
         const copy = JSON.parse(JSON.stringify(slide['p:sld']['p:cSld']['p:spTree']['p:sp'][1]));
         copy['p:txBody']['a:p']['a:r']['a:t'] = text;
         this.addColorAndSize(copy, opt);
-        copy['p:spPr']['a:xfrm']['a:off'].$.x = opt?.x || copy['p:spPr']['a:xfrm']['a:off'].$.x;
-        copy['p:spPr']['a:xfrm']['a:off'].$.y = opt?.y || 3190175;
-        copy['p:spPr']['a:xfrm']['a:ext'].$.cx = opt?.cx || copy['p:spPr']['a:xfrm']['a:ext'].$.cx;
-        copy['p:spPr']['a:xfrm']['a:ext'].$.cy = opt?.cy || copy['p:spPr']['a:xfrm']['a:ext'].$.cy;
+        // copy['p:spPr']['a:xfrm']['a:off'].$.x = opt?.x || copy['p:spPr']['a:xfrm']['a:off'].$.x;
+        // copy['p:spPr']['a:xfrm']['a:off'].$.y = opt?.y || 3190175;
+        // copy['p:spPr']['a:xfrm']['a:ext'].$.cx = opt?.cx || copy['p:spPr']['a:xfrm']['a:ext'].$.cx;
+        // copy['p:spPr']['a:xfrm']['a:ext'].$.cy = opt?.cy || copy['p:spPr']['a:xfrm']['a:ext'].$.cy;
         slide['p:sld']['p:cSld']['p:spTree']['p:sp'].push(copy);
         return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
     }
