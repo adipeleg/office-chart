@@ -1,3 +1,5 @@
+import { IPPTChartData } from './../../xlsx/models/data.model';
+import { IData } from '../../xlsx/models/data.model';
 import { PptxGenetator } from './../pptxGenerator';
 describe('create pptx', () => {
 
@@ -39,7 +41,22 @@ describe('create pptx', () => {
         const slide4 = await gen.createSlide();
         await slide4.addTable(getShotData3());
         const slide5 = await gen.createSlide();
-        await slide5.addChart(getShotData())
+        const opt: IPPTChartData = {
+            title: {
+                name: 'testChart line',
+                color: '8ab4f8',
+                size: 3000
+            },
+            type: 'line',
+            data: getShotData(),
+            // rgbColors: ['8ab4f8', 'ff7769'],
+            labels: false,
+            // marker: {
+            //     size: 4,
+            //     shape: 'square'
+            // }
+        }
+        await slide5.addChart(opt);
         const slide6 = await gen.createSlide();
         await gen.generate(__dirname + '/test11', 'file');
     })
@@ -47,6 +64,11 @@ describe('create pptx', () => {
 
 const getShotData = () => {
     return [['h', 'b', 'c', 'd', 'e'], [1, 2, 3, 4, 5], [4, 5, 6, 7, 8]];
+}
+
+
+const getShotDataLabels = () => {
+    return [['h', 'b', 'c', 'd', 'e'], ['label1', 2, 3, 4, 5], ['label2', 5, 6, 7, 8]];
 }
 
 const getShotData2 = () => {

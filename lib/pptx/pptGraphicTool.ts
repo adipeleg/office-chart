@@ -1,6 +1,6 @@
 import { ChartTool } from './../xlsx/chartTool';
 import { XlsxGenerator } from './../xlsx/xlsxGenerator';
-import { IData } from './../xlsx/models/data.model';
+import { IData, IPPTChartData } from './../xlsx/models/data.model';
 import { XmlTool } from "../xmlTool";
 
 export class PptGraphicTool {
@@ -47,17 +47,16 @@ export class PptGraphicTool {
         return rowTemplate;
     }
 
-    public addChart = async (slide, opt: any[][], slideId: number) => {
-
-        const chartOpt: IData = {
-            type: 'line',
-            title: { name: 'test chart' },
-            range: 'A1:C4'
-        }
+    public addChart = async (slide, chartOpt: IPPTChartData, slideId: number) => {
+        chartOpt.type = 'line';
+        const data = JSON.parse(JSON.stringify(chartOpt.data));
+        chartOpt.range = `A1:${this.getColName(data[0].length - 1)}${data.length}`;
 
         const chartId = await this.addContentTypeChart();
         await this.addChartRef(chartId);
-        await this.createXlsxWithTableAndChart(opt, chartId);
+        await this.createXlsxWithTableAndChart(data, chartId);
+
+
         await this.buildChart(chartOpt, chartId);
 
         const slideWithChart = await this.xmlTool.readXml('ppt/slides/slide3.xml');
@@ -71,11 +70,11 @@ export class PptGraphicTool {
 
     }
 
-    private buildChart = async (chartOpt: IData, chartId: number) => {
+    private buildChart = async (chartOpt: IPPTChartData, chartId: number) => {
         let readChart = await this.xmlTool.readXml(`ppt/charts/chart1.xml`);
-        const chartData = this.chartTool.buildChart(readChart, chartOpt, 'sheet1');
+        const chartData = this.chartTool.buildChart(readChart, chartOpt, 'chart' + chartId);
         chartData['c:chartSpace']['c:externalData'].$['r:id'] = "rId" + chartId;
-        console.log('chartData', chartData);
+
         this.xmlTool.write(`ppt/charts/chart${chartId}.xml`, chartData)
     }
 
@@ -139,13 +138,18 @@ export class PptGraphicTool {
         return this.xmlTool.write(`ppt/charts/_rels/chart${id}.xml.rels`, chartRel);
     }
 
-    private createXlsxWithTableAndChart = async (opt: any[][], chartId: number) => {
+    private createXlsxWithTableAndChart = async (data: any[][], chartId: number) => {
         await this.xlsxGenerator.createWorkbook();
-        const sheet = await this.xlsxGenerator.createWorksheet('sheet1');
-        await sheet.addTable(opt);
+        const sheet = await this.xlsxGenerator.createWorksheet('chart' + chartId);
+        await sheet.addTable(data);
         const bf = await this.xlsxGenerator.generate('', 'buffer');
 
         this.xmlTool.writeBuffer(`ppt/embeddings/Microsoft_Excel_Sheet${chartId}.xlsx`, bf);
+    }
+
+    private getColName = (n: number) => {
+        var abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        return abc[n] || abc[n % 26];
     }
 
 }

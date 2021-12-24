@@ -18,13 +18,13 @@
               </a:defRPr>
             </a:pPr>
             <a:r>
-              <a:rPr b="0" i="0" strike="noStrike" sz="5000" u="none">
+              <a:rPr b="0" i="0" strike="noStrike" sz="3000" u="none">
                 <a:solidFill>
-                  <a:srgbClr val="000000"/>
+                  <a:srgbClr val="8ab4f8"/>
                 </a:solidFill>
                 <a:latin typeface="Helvetica Neue"/>
               </a:rPr>
-              <a:t>test chart</a:t>
+              <a:t>testChart line</a:t>
             </a:r>
           </a:p>
         </c:rich>
@@ -117,7 +117,7 @@
           </c:dLbls>
           <c:cat>
             <c:strRef>
-              <c:f>sheet1!$A$1:$C$1</c:f>
+              <c:f>sheet1!$A$1:$E$1</c:f>
               <c:strCache>
                 <c:ptCount val="4"/>
                 <c:pt idx="0">
@@ -137,7 +137,7 @@
           </c:cat>
           <c:val>
             <c:numRef>
-              <c:f>sheet1!$A$2:$C$2</c:f>
+              <c:f>sheet1!$A$2:$E$2</c:f>
               <c:numCache>
                 <c:ptCount val="4"/>
                 <c:pt idx="0">
@@ -213,7 +213,7 @@
           </c:dLbls>
           <c:cat>
             <c:strRef>
-              <c:f>sheet1!$A$1:$C$1</c:f>
+              <c:f>sheet1!$A$1:$E$1</c:f>
               <c:strCache>
                 <c:ptCount val="4"/>
                 <c:pt idx="0">
@@ -233,103 +233,7 @@
           </c:cat>
           <c:val>
             <c:numRef>
-              <c:f>sheet1!$A$3:$C$3</c:f>
-              <c:numCache>
-                <c:ptCount val="4"/>
-                <c:pt idx="0">
-                  <c:v>1.000000</c:v>
-                </c:pt>
-                <c:pt idx="1">
-                  <c:v>2.000000</c:v>
-                </c:pt>
-                <c:pt idx="2">
-                  <c:v>3.000000</c:v>
-                </c:pt>
-                <c:pt idx="3">
-                  <c:v>4.000000</c:v>
-                </c:pt>
-              </c:numCache>
-            </c:numRef>
-          </c:val>
-          <c:smooth val="0"/>
-        </c:ser>
-        <c:ser>
-          <c:idx>3</c:idx>
-          <c:order>3</c:order>
-          <c:spPr>
-            <a:noFill/>
-            <a:ln w="76200" cap="flat">
-              <a:solidFill>
-                <a:srgbClr val="56C1FF"/>
-              </a:solidFill>
-              <a:prstDash val="solid"/>
-              <a:miter lim="400000"/>
-            </a:ln>
-            <a:effectLst/>
-          </c:spPr>
-          <c:marker>
-            <c:symbol val="none"/>
-            <c:size val="6"/>
-            <c:spPr>
-              <a:noFill/>
-              <a:ln w="76200" cap="flat">
-                <a:solidFill>
-                  <a:srgbClr val="56C1FF"/>
-                </a:solidFill>
-                <a:prstDash val="solid"/>
-                <a:miter lim="400000"/>
-              </a:ln>
-              <a:effectLst/>
-            </c:spPr>
-          </c:marker>
-          <c:dLbls>
-            <c:numFmt formatCode="#,##0" sourceLinked="0"/>
-            <c:txPr>
-              <a:bodyPr/>
-              <a:lstStyle/>
-              <a:p>
-                <a:pPr>
-                  <a:defRPr b="0" i="0" strike="noStrike" sz="3600" u="none">
-                    <a:solidFill>
-                      <a:srgbClr val="000000"/>
-                    </a:solidFill>
-                    <a:latin typeface="Helvetica Neue"/>
-                  </a:defRPr>
-                </a:pPr>
-              </a:p>
-            </c:txPr>
-            <c:dLblPos val="t"/>
-            <c:showLegendKey val="0"/>
-            <c:showVal val="0"/>
-            <c:showCatName val="0"/>
-            <c:showSerName val="0"/>
-            <c:showPercent val="0"/>
-            <c:showBubbleSize val="0"/>
-            <c:showLeaderLines val="0"/>
-          </c:dLbls>
-          <c:cat>
-            <c:strRef>
-              <c:f>sheet1!$A$1:$C$1</c:f>
-              <c:strCache>
-                <c:ptCount val="4"/>
-                <c:pt idx="0">
-                  <c:v>April</c:v>
-                </c:pt>
-                <c:pt idx="1">
-                  <c:v>May</c:v>
-                </c:pt>
-                <c:pt idx="2">
-                  <c:v>June</c:v>
-                </c:pt>
-                <c:pt idx="3">
-                  <c:v>July</c:v>
-                </c:pt>
-              </c:strCache>
-            </c:strRef>
-          </c:cat>
-          <c:val>
-            <c:numRef>
-              <c:f>sheet1!$A$4:$C$4</c:f>
+              <c:f>sheet1!$A$3:$E$3</c:f>
               <c:numCache>
                 <c:ptCount val="4"/>
                 <c:pt idx="0">

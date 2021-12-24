@@ -13,3 +13,20 @@ export interface IData {
         shape?: string;
     }
 }
+
+export interface IPPTChartData {
+    type: 'line' | 'bar' | 'pie' | 'scatter';
+    title: {
+        name: string,
+        color?: string,
+        size?: number
+    };
+    range?: string,
+    data?: any[][],
+    rgbColors?: string[],
+    labels?: boolean,
+    marker?: {
+        size?: number;
+        shape?: string;
+    }
+}

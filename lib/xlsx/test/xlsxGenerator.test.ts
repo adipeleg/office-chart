@@ -1,6 +1,6 @@
 import { IData } from '../models/data.model';
 import { XlsxGenerator } from './../xlsxGenerator';
-xdescribe('check xlsxGenerator', () => {
+describe('check xlsxGenerator', () => {
     it('test create xlsx with multi sheets and charts', async () => {
         const gen = new XlsxGenerator();
         await gen.createWorkbook();
@@ -16,7 +16,7 @@ xdescribe('check xlsxGenerator', () => {
             range: 'B1:D3',
             type: 'line',
             rgbColors: ['8ab4f8', 'ff7769'],
-            labels: false,
+            labels: true,
             marker: {
                 size: 4,
                 shape: 'square'

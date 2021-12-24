@@ -1,10 +1,9 @@
+import { IData, IPPTChartData } from './../xlsx/models/data.model';
 import { XlsxGenerator } from './../xlsx/xlsxGenerator';
 import { PptTool } from './pptTool';
 import { XmlTool } from "../xmlTool";
 import { ITextModel } from './models/text.model';
 import { PptGraphicTool } from './pptGraphicTool';
-import { XlsxTool } from '../xlsx/xlsxTool';
-import { IData } from '../xlsx/models/data.model';
 import { ChartTool } from '../xlsx/chartTool';
 
 export class PptxGenetator {
@@ -19,15 +18,16 @@ export class PptxGenetator {
     public createSlide = async () => {
         const id = await this.pptTool.addSlidePart();
         const slide = await this.pptTool.createSlide(id);
-
+    
         return {
             data: slide,
             id: id,
+            tData: [],
             addTitle: async (text: string, opt?: ITextModel) => await this.pptTool.addTitle(slide, id, text, opt),
             addSubTitle: async (text: string, opt?: ITextModel) => await this.pptTool.addSubTitle(slide, id, text, opt),
             addText: async (text: string, opt?: ITextModel) => await this.pptTool.addText(slide, id, text, opt),
-            addTable: async (data: any[][]) => await this.pptGraphicTool.writeTable(id, slide, data),
-            addChart: async (opt: any[][]) => await this.pptGraphicTool.addChart(slide, opt, id)
+            addTable: async (data: any[][]) => { return this.pptGraphicTool.writeTable(id, slide, data) },
+            addChart: async (opt: IPPTChartData) => await this.pptGraphicTool.addChart(slide, opt, id)
         }
     }
 

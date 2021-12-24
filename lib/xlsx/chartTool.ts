@@ -1,4 +1,4 @@
-import { IData } from "./models/data.model";
+import { IData, IPPTChartData } from "./models/data.model";
 import { XmlTool } from "../xmlTool";
 
 export class ChartTool {
@@ -35,7 +35,7 @@ export class ChartTool {
         }
     }
 
-    public buildChart = (readChart: any, opt: IData, sheetName: string) => {
+    public buildChart = (readChart: any, opt: IData | IPPTChartData, sheetName: string) => {
         readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = opt.title.name;
         if (opt.title.color) {
             readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:rPr']['a:solidFill']['a:srgbClr'].$.val = opt.title.color
@@ -74,6 +74,10 @@ export class ChartTool {
             if (opt.type !== 'scatter') {
                 d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$1:$${lastCol}$1`;
                 d['c:val']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$${(i + 1)}:$${lastCol}$${(i + 1)}`;
+                if (opt.hasOwnProperty('data')) {
+                    d['c:cat']['c:strRef']['c:strCache'] = this.buildCache(opt['data'][0], opt.labels);
+                    d['c:val']['c:numRef']['c:numCache'] = this.buildCache(opt['data'][i], opt.labels);
+                }
             } else {
                 d['c:xVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$1:$${lastCol}$1`;
                 d['c:yVal']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$${(i + 1)}:$${lastCol}$${(i + 1)}`;
@@ -104,6 +108,15 @@ export class ChartTool {
                         'c:f': sheetName + '!$A$' + i
                     }
                 }
+                if (opt.hasOwnProperty('data')) {
+                    d['c:tx']['c:strRef']['c:strCache'] = {
+                        'c:ptCount': { 'val': '1' },
+                        'c:pt': {
+                            $: { idx: `${i}` },
+                            'c:v': opt['data'][i][0]
+                        }
+                    };
+                }
             } else {
                 delete d['c:tx'];
             }
@@ -111,6 +124,19 @@ export class ChartTool {
             readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d)
         }
         return readChart;
+    }
+
+    private buildCache = (rowData: any[], labels: boolean) => {
+        const cache = { ['c:ptCount']: { $: { val: `${rowData.length}` } } }
+        cache['c:pt'] = [];
+        for (let i = labels ? 1 : 0; i < rowData.length; i++) {
+            cache['c:pt'].push({
+                $: { idx: `${i}` },
+                'c:v': rowData[i]
+            })
+        }
+
+        return cache;
     }
 
     private addDrawingRel = async (id: string) => {
