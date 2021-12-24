@@ -95,7 +95,7 @@ const opt: IPPTChartData = {
     size: 3000,
   },
   type: "line",
-  data: getShotData(),
+  data: [header, row1, row2],
   rgbColors: ["8ab4f8", "ff7769"],
   labels: true
 };
