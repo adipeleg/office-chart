@@ -94,7 +94,7 @@ export class ChartTool {
                         }
                     }
                 }
-                if (d['c:marker']) {
+                if (d['c:marker'] && !opt.hasOwnProperty('data')) {
                     d['c:marker']['c:size'].$.val = opt?.marker?.size || '4';
                     d['c:marker']['c:symbol'].$.val = opt?.marker?.shape || 'circle';
                     d['c:marker']['c:spPr']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];

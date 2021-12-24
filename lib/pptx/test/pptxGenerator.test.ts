@@ -49,7 +49,7 @@ describe('create pptx', () => {
             },
             type: 'line',
             data: getShotData(),
-            // rgbColors: ['8ab4f8', 'ff7769'],
+            rgbColors: ['8ab4f8', 'ff7769'],
             labels: false,
             // marker: {
             //     size: 4,
