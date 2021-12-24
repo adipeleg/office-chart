@@ -69,6 +69,14 @@ describe('create pptx', () => {
         yield slide6.addChart(opt);
         yield slide6.addTitle(null);
         yield slide6.addSubTitle(null);
+        const slide7 = yield gen.createSlide();
+        opt.data = getShotDataLabels();
+        opt.labels = true;
+        opt.type = 'bar';
+        opt.title.name = 'bar with labels';
+        yield slide7.addChart(opt);
+        yield slide7.addTitle(null);
+        yield slide7.addSubTitle(null);
         yield gen.generate(__dirname + '/test11', 'file');
     }));
 });

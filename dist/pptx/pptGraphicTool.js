@@ -34,7 +34,6 @@ class PptGraphicTool {
             return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
         });
         this.addChart = (slide, chartOpt, slideId) => __awaiter(this, void 0, void 0, function* () {
-            chartOpt.type = 'line';
             const data = JSON.parse(JSON.stringify(chartOpt.data));
             chartOpt.range = `A1:${this.getColName(data[0].length - 1)}${data.length}`;
             const chartId = yield this.addContentTypeChart();
@@ -49,7 +48,7 @@ class PptGraphicTool {
             yield this.addSlideChartRel(slideId, chartId);
         });
         this.buildChart = (chartOpt, chartId) => __awaiter(this, void 0, void 0, function* () {
-            let readChart = yield this.xmlTool.readXml(`ppt/charts/chart1.xml`);
+            let readChart = chartOpt.type === 'line' ? yield this.xmlTool.readXml(`ppt/charts/chart1.xml`) : yield this.xmlTool.readXml(`ppt/charts/chart2.xml`);
             const chartData = this.chartTool.buildChart(readChart, chartOpt, 'chart' + chartId);
             chartData['c:chartSpace']['c:externalData'].$['r:id'] = "rId" + chartId;
             this.xmlTool.write(`ppt/charts/chart${chartId}.xml`, chartData);

@@ -17,6 +17,8 @@ npm install office-chart
 Generate xlsx and write chart to file
 
 ```js
+import { IData } from 'office-chart';
+import { XlsxGenerator } from "office-chart";
 
 const gen = new XlsxGenerator();
 
@@ -24,7 +26,7 @@ await gen.createWorkbook();
 
 const sheet1 = await gen.createWorksheet("sheet1");
 
-const sheet2 = await gen.createWorksheet("sheetWithChart2";
+const sheet2 = await gen.createWorksheet("sheetWithChart2");
 
 const header = ['h', 'b', 'c', 'd'];
 const row1 = ['label1', 2, 3, 4];
@@ -63,6 +65,10 @@ Generate ppt with slides and text
 #
 
 ```js
+
+import { PptxGenetator } from 'office-chart';
+import { IPPTChartData } from 'office-chart/dist/xlsx/models/data.model';
+
 const gen = new PptxGenetator();
 
 await gen.createPresentation();
@@ -113,6 +119,6 @@ await gen.generate(__dirname + "/test2", "file");
 
 #
 #### currently only column, line, pie and scatter charts are supported in Xlsx.
-#### currently only line chart is supported in PPTX.
+#### currently only column, line chart are supported in PPTX.
 #
 #### Enjoy and don't forget to add a star :)

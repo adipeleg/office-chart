@@ -63,6 +63,15 @@ describe('create pptx', () => {
         await slide6.addChart(opt);
         await slide6.addTitle(null);
         await slide6.addSubTitle(null);
+
+        const slide7 = await gen.createSlide();
+        opt.data = getShotDataLabels();
+        opt.labels = true;
+        opt.type = 'bar';
+        opt.title.name = 'bar with labels';
+        await slide7.addChart(opt);
+        await slide7.addTitle(null);
+        await slide7.addSubTitle(null);
         await gen.generate(__dirname + '/test11', 'file');
     })
 })

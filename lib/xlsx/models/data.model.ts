@@ -15,7 +15,7 @@ export interface IData {
 }
 
 export interface IPPTChartData {
-    type: 'line';
+    type: 'line' | 'bar';
     title: {
         name: string,
         color?: string,

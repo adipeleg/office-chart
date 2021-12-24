@@ -74,7 +74,7 @@ class PptTool {
         this.removeTemplateSlide = () => __awaiter(this, void 0, void 0, function* () {
             const ppt = yield this.xmlTool.readXml('ppt/presentation.xml');
             ppt['p:presentation']['p:sldIdLst']['p:sldId'] = ppt['p:presentation']['p:sldIdLst']['p:sldId'].filter(slide => {
-                return slide.$['r:id'] !== 'rId8' && slide.$['r:id'] !== 'rId9' && slide.$['r:id'] !== 'rId10';
+                return slide.$['r:id'] !== 'rId8' && slide.$['r:id'] !== 'rId9' && slide.$['r:id'] !== 'rId10' && slide.$['r:id'] !== 'rId11';
             });
             return this.xmlTool.write('ppt/presentation.xml', ppt);
         });

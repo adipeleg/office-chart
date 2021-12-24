@@ -88,7 +88,7 @@ export class PptTool {
     public removeTemplateSlide = async () => {
         const ppt = await this.xmlTool.readXml('ppt/presentation.xml');
         ppt['p:presentation']['p:sldIdLst']['p:sldId'] = ppt['p:presentation']['p:sldIdLst']['p:sldId'].filter(slide => {
-            return slide.$['r:id'] !== 'rId8' && slide.$['r:id'] !== 'rId9' && slide.$['r:id'] !== 'rId10';
+            return slide.$['r:id'] !== 'rId8' && slide.$['r:id'] !== 'rId9' && slide.$['r:id'] !== 'rId10' && slide.$['r:id'] !== 'rId11';
         })
 
         return this.xmlTool.write('ppt/presentation.xml', ppt);
