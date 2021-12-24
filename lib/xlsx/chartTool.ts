@@ -8,6 +8,34 @@ export class ChartTool {
 
     public addChart = async (sheet: any, sheetName: string, opt: IData, id: string) => {
         let readChart = await this.xmlTool.readXml(`xl/charts/chart${this.getChartNum(opt)}.xml`);
+        this.buildChart(readChart, opt, sheetName);
+
+        if (sheet) {
+            await this.addDrawingRel(id);
+            await this.addChartToDraw(id);
+            await this.addChartToSheetRel(id);
+            await this.addChartToParts(id);
+            await this.addChartToSheet(sheet, id);
+
+            return this.xmlTool.write(`xl/charts/chart${id}.xml`, readChart);
+        }
+        return readChart;
+    }
+
+    private getChartNum = (opt: IData) => {
+        switch (opt.type) {
+            case 'bar':
+                return 1;
+            case 'line':
+                return 2;
+            case 'pie':
+                return 3;
+            case 'scatter':
+                return 4;
+        }
+    }
+
+    public buildChart = (readChart: any, opt: IData, sheetName: string) => {
         readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = opt.title.name;
         if (opt.title.color) {
             readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:rPr']['a:solidFill']['a:srgbClr'].$.val = opt.title.color
@@ -82,30 +110,10 @@ export class ChartTool {
 
             readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d)
         }
-
-        await this.addDrawingRel(sheet, sheetName, id);
-        await this.addChartToDraw(id);
-        await this.addChartToSheet(sheet, id);
-        await this.addChartToSheetRel(id);
-        await this.addChartToParts(id);
-
-        return this.xmlTool.write(`xl/charts/chart${id}.xml`, readChart);
+        return readChart;
     }
 
-    private getChartNum = (opt: IData) => {
-        switch (opt.type) {
-            case 'bar':
-                return 1;
-            case 'line':
-                return 2;
-            case 'pie':
-                return 3;
-            case 'scatter':
-                return 4;
-        }
-    }
-
-    private addDrawingRel = async (sheet, sheetName: string, id: string) => {
+    private addDrawingRel = async (id: string) => {
         const drawRel = await this.xmlTool.readXml('xl/drawings/_rels/drawing2.xml.rels'); //add new chart rel
         drawRel.Relationships.Relationship =
 

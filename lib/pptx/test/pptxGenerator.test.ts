@@ -36,10 +36,11 @@ describe('create pptx', () => {
         await slide2.addTable(getShotData());
         const slide3 = await gen.createSlide();
         await slide3.addTable(getShotData2());
-
         const slide4 = await gen.createSlide();
         await slide4.addTable(getShotData3());
         const slide5 = await gen.createSlide();
+        await slide5.addChart(getShotData())
+        const slide6 = await gen.createSlide();
         await gen.generate(__dirname + '/test11', 'file');
     })
 })

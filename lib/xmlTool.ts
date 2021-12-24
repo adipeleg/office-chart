@@ -40,9 +40,21 @@ export class XmlTool {
         })
     }
 
+    public readXml2 = async (file: string) => {
+        return this.zip.file(file).async('arraybuffer').then(data => {
+            console.log('readXml', file, data)
+            return this.parser.parseStringPromise(data);
+        })
+    }
+
     public write = async (filename: string, data: any) => {
         var xml = this.builder.buildObject(data);
         this.zip.file(filename, Buffer.from(xml), { base64: true });
+    }
+
+    public writeBuffer = async (filename: string, data: Buffer) => {
+        // var xml = this.builder.buildObject(data);
+        this.zip.file(filename, data, { base64: true });
     }
 
     public writeStr = async (filename: string, data: string) => {

@@ -21,7 +21,7 @@ export class XlsxGenerator {
             addTable: (data: any[][]) => {
                 return this.xlsxTool.writeTable(sheet, data, id)
             },
-            addChart: async (opt: IData) => await this.chartTool.addChart(sheet, name, opt, id)
+            addChart: async (opt: IData) => { return this.chartTool.addChart(sheet, name, opt, id) }
         }
     }
 
