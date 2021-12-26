@@ -101,7 +101,22 @@ const opt: IPPTChartData = {
     size: 3000,
   },
   type: "line",
-  data: [header, row1, row2],
+  data: [header, row1, row2], // can also be:
+  // [
+  //       {
+  //           name: 'lab1 test', //label
+  //           values: [1, 2, 3, 4, 5], //yvalues
+  //           labels: ['h', 'b', 'c', 'd', 'e'] //xvalue
+  //       }, {
+  //           name: 'lab2 test',
+  //           values: [4, 5, 6, 7, 8],
+  //           labels: ['h', 'b', 'c', 'd', 'e'] 
+  //       }, {
+  //           name: 'lab3 test',
+  //           values: [9, 1, 2, 4, 10],
+  //           labels: ['h', 'b', 'c', 'd', 'e']
+  //       }
+  //   ]
   rgbColors: ["8ab4f8", "ff7769"],
   labels: true
 };

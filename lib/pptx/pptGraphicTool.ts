@@ -49,15 +49,14 @@ export class PptGraphicTool {
 
     public addChart = async (slide, chartOpt: IPPTChartData, slideId: number) => {
         const data = JSON.parse(JSON.stringify(this.buildData(chartOpt.data)));
-        chartOpt.data = data;
-        console.log('data', data);
+        chartOpt.data = JSON.parse(JSON.stringify(data));
+        
         chartOpt.range = `A1:${this.getColName(data[0].length - 1)}${data.length}`;
 
         const chartId = await this.addContentTypeChart();
         await this.addChartRef(chartId);
         await this.createXlsxWithTableAndChart(data, chartId);
 
-        console.log(chartOpt)
         await this.buildChart(chartOpt, chartId);
 
         const slideWithChart = await this.xmlTool.readXml('ppt/slides/slide3.xml');
@@ -81,6 +80,7 @@ export class PptGraphicTool {
 
             return dataAsTable;
         }
+
         return data as any[][];
     }
 
