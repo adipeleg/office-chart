@@ -77,6 +77,14 @@ describe('create pptx', () => {
         yield slide7.addChart(opt);
         yield slide7.addTitle(null);
         yield slide7.addSubTitle(null);
+        const slide8 = yield gen.createSlide();
+        opt.data = getDataIPPTChartDataVal();
+        opt.labels = true;
+        opt.type = 'line';
+        opt.title.name = 'line with labels - new format';
+        yield slide8.addChart(opt);
+        yield slide8.addTitle(null);
+        yield slide8.addSubTitle(null);
         yield gen.generate(__dirname + '/test11', 'file');
     }));
 });
@@ -91,4 +99,21 @@ const getShotData2 = () => {
 };
 const getShotData3 = () => {
     return [[1, 2], [5, 6], [9, 10]];
+};
+const getDataIPPTChartDataVal = () => {
+    return [
+        {
+            name: 'lab1 test',
+            values: [1, 2, 3, 4, 5],
+            labels: ['h', 'b', 'c', 'd', 'e']
+        }, {
+            name: 'lab2 test',
+            values: [4, 5, 6, 7, 8],
+            labels: ['h', 'b', 'c', 'd', 'e']
+        }, {
+            name: 'lab3 test',
+            values: [9, 1, 2, 4, 10],
+            labels: ['h', 'b', 'c', 'd', 'e']
+        }
+    ];
 };

@@ -21,11 +21,16 @@ export interface IPPTChartData {
         size?: number;
     };
     range?: string;
-    data?: any[][];
+    data?: any[][] | IPPTChartDataVal[];
     rgbColors?: string[];
     labels?: boolean;
     marker?: {
         size?: number;
         shape?: string;
     };
+}
+export interface IPPTChartDataVal {
+    labels: string[];
+    name: string;
+    values: number[];
 }

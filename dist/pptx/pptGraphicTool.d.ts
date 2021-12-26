@@ -10,6 +10,7 @@ export declare class PptGraphicTool {
     writeTable: (id: number, slide: any, data: any[][]) => Promise<void>;
     private addRow;
     addChart: (slide: any, chartOpt: IPPTChartData, slideId: number) => Promise<void>;
+    private buildData;
     private buildChart;
     private addContentTypeChart;
     private addSlideChartRel;
