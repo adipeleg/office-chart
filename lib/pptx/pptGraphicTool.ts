@@ -1,6 +1,6 @@
 import { ChartTool } from './../xlsx/chartTool';
 import { XlsxGenerator } from './../xlsx/xlsxGenerator';
-import { IData, IPPTChartData } from './../xlsx/models/data.model';
+import { IData, IPPTChartData, IPPTChartDataVal } from './../xlsx/models/data.model';
 import { XmlTool } from "../xmlTool";
 
 export class PptGraphicTool {
@@ -48,14 +48,16 @@ export class PptGraphicTool {
     }
 
     public addChart = async (slide, chartOpt: IPPTChartData, slideId: number) => {
-        const data = JSON.parse(JSON.stringify(chartOpt.data));
+        const data = JSON.parse(JSON.stringify(this.buildData(chartOpt.data)));
+        chartOpt.data = data;
+        console.log('data', data);
         chartOpt.range = `A1:${this.getColName(data[0].length - 1)}${data.length}`;
 
         const chartId = await this.addContentTypeChart();
         await this.addChartRef(chartId);
         await this.createXlsxWithTableAndChart(data, chartId);
 
-
+        console.log(chartOpt)
         await this.buildChart(chartOpt, chartId);
 
         const slideWithChart = await this.xmlTool.readXml('ppt/slides/slide3.xml');
@@ -67,6 +69,19 @@ export class PptGraphicTool {
         this.xmlTool.write(`ppt/slides/slide${slideId}.xml`, slide);
         await this.addSlideChartRel(slideId, chartId);
 
+    }
+
+    private buildData = (data: any[][] | IPPTChartDataVal[]): any[][] => {
+        if (data && data[0] && data[0].hasOwnProperty('values')) {
+            const dataAsTable = [];
+            (data as IPPTChartDataVal[]).forEach((value: IPPTChartDataVal) => {
+                dataAsTable[0] = ['labels', ...value.labels];
+                dataAsTable.push([value.name, ...value.values])
+            })
+
+            return dataAsTable;
+        }
+        return data as any[][];
     }
 
     private buildChart = async (chartOpt: IPPTChartData, chartId: number) => {

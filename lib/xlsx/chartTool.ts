@@ -127,6 +127,7 @@ export class ChartTool {
     }
 
     private buildCache = (rowData: any[], labels: boolean) => {
+        console.log('buildCache', rowData, labels)
         const cache = { ['c:ptCount']: { $: { val: `${rowData.length}` } } }
         cache['c:pt'] = [];
         for (let i = labels ? 1 : 0; i < rowData.length; i++) {

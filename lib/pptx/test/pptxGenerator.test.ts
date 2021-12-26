@@ -1,4 +1,4 @@
-import { IPPTChartData } from './../../xlsx/models/data.model';
+import { IPPTChartData, IPPTChartDataVal } from './../../xlsx/models/data.model';
 import { PptxGenetator } from './../pptxGenerator';
 describe('create pptx', () => {
 
@@ -72,6 +72,15 @@ describe('create pptx', () => {
         await slide7.addChart(opt);
         await slide7.addTitle(null);
         await slide7.addSubTitle(null);
+
+        const slide8 = await gen.createSlide();
+        opt.data = getDataIPPTChartDataVal();
+        opt.labels = true;
+        opt.type = 'line';
+        opt.title.name = 'line with labels - new format';
+        await slide8.addChart(opt);
+        await slide8.addTitle(null);
+        await slide8.addSubTitle(null);
         await gen.generate(__dirname + '/test11', 'file');
     })
 })
@@ -91,4 +100,22 @@ const getShotData2 = () => {
 
 const getShotData3 = () => {
     return [[1, 2], [5, 6], [9, 10]];
+}
+
+const getDataIPPTChartDataVal = (): IPPTChartDataVal[] => {
+    return [
+        {
+            name: 'lab1 test',
+            values: [1, 2, 3, 4, 5],
+            labels: ['h', 'b', 'c', 'd', 'e']
+        }, {
+            name: 'lab2 test',
+            values: [4, 5, 6, 7, 8],
+            labels: ['h', 'b', 'c', 'd', 'e']
+        }, {
+            name: 'lab3 test',
+            values: [9, 1, 2, 4, 10],
+            labels: ['h', 'b', 'c', 'd', 'e']
+        }
+    ]
 }
