@@ -93,10 +93,16 @@ class ChartTool {
                             }
                         };
                     }
-                    if (d['c:marker'] && !opt.hasOwnProperty('data')) {
-                        d['c:marker']['c:size'].$.val = ((_a = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _a === void 0 ? void 0 : _a.size) || '4';
-                        d['c:marker']['c:symbol'].$.val = ((_b = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _b === void 0 ? void 0 : _b.shape) || 'circle';
-                        d['c:marker']['c:spPr']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];
+                }
+                if (opt.type === 'line') {
+                    d['c:spPr']['a:ln'].$.w = opt.lineWidth || 30000;
+                }
+                if (d['c:marker'] && (opt === null || opt === void 0 ? void 0 : opt.marker) && (opt.type === 'line')) {
+                    d['c:marker']['c:size'].$.val = ((_a = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _a === void 0 ? void 0 : _a.size) || '4';
+                    d['c:marker']['c:symbol'].$.val = ((_b = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _b === void 0 ? void 0 : _b.shape) || 'circle';
+                    delete d['c:marker']['c:spPr']['a:noFill'];
+                    if (opt.rgbColors[i - 1]) {
+                        d['c:marker']['c:spPr']['a:solidFill'] = { 'a:srgbClr': { $: { val: opt.rgbColors[i - 1] } } };
                         d['c:marker']['c:spPr']['a:ln']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];
                     }
                 }

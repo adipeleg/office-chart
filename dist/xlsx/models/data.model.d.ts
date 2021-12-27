@@ -12,6 +12,7 @@ export interface IData {
         size?: number;
         shape?: string;
     };
+    lineWidth?: number;
 }
 export interface IPPTChartData {
     type: 'line' | 'bar';
@@ -28,6 +29,7 @@ export interface IPPTChartData {
         size?: number;
         shape?: string;
     };
+    lineWidth?: number;
 }
 export interface IPPTChartDataVal {
     labels: string[];

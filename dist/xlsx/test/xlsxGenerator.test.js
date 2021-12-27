@@ -30,7 +30,8 @@ describe('check xlsxGenerator', () => {
             marker: {
                 size: 4,
                 shape: 'square'
-            }
+            },
+            lineWidth: 20000
         };
         yield sheet2.addChart(opt);
         const sheet3 = yield gen.createWorksheet("sheet3");
