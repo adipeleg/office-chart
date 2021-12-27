@@ -101,7 +101,7 @@ class ChartTool {
                     d['c:marker']['c:size'].$.val = ((_a = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _a === void 0 ? void 0 : _a.size) || '4';
                     d['c:marker']['c:symbol'].$.val = ((_b = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _b === void 0 ? void 0 : _b.shape) || 'circle';
                     delete d['c:marker']['c:spPr']['a:noFill'];
-                    if (opt.rgbColors[i - 1]) {
+                    if (opt.rgbColors && opt.rgbColors[i - 1]) {
                         d['c:marker']['c:spPr']['a:solidFill'] = { 'a:srgbClr': { $: { val: opt.rgbColors[i - 1] } } };
                         d['c:marker']['c:spPr']['a:ln']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];
                     }

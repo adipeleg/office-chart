@@ -105,7 +105,7 @@ export class ChartTool {
                 d['c:marker']['c:size'].$.val = opt?.marker?.size || '4';
                 d['c:marker']['c:symbol'].$.val = opt?.marker?.shape || 'circle';
                 delete d['c:marker']['c:spPr']['a:noFill'];
-                if (opt.rgbColors[i - 1]) {
+                if (opt.rgbColors && opt.rgbColors[i - 1]) {
                     d['c:marker']['c:spPr']['a:solidFill'] = { 'a:srgbClr': { $: { val: opt.rgbColors[i - 1] } } };
                     d['c:marker']['c:spPr']['a:ln']['a:solidFill']['a:srgbClr'].$.val = opt.rgbColors[i - 1];
                 }

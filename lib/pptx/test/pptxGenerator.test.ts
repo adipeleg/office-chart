@@ -147,6 +147,10 @@ const addNewData = (): IPPTChartData => {
         title: { name: 'c over time' },
         type: 'line',
         labels: true,
+        marker: {
+            size: 4,
+            shape: 'circle'
+        },
         data: [{
             name: 'c1',
             labels: ['May', 'Aug', 'Nov'],
