@@ -23,7 +23,7 @@ describe('check xlsxGenerator', () => {
                 color: '8ab4f8',
                 size: 3000
             },
-            range: 'B1:D3',
+            range: 'B1:D4',
             type: 'line',
             rgbColors: ['8ab4f8', 'ff7769'],
             labels: true,
@@ -89,11 +89,11 @@ describe('check xlsxGenerator', () => {
 const getLongData = () => {
     const data = []; //[['h1', 'h2', 'h3']];
     for (let i = 0; i < 1000; i++) {
-        data.push([i, i + 1, i + 2]);
+        data.push([i, i + 1, i + 2000]);
     }
     return data;
 };
 const getShotData = () => {
-    return [['h', 'b', 'c', 'd'], ['tot', 2, 3, 4], ['sos', 5, 6, 7]];
+    return [['h', 'b', 'c', 'd'], ['tot', 2, 300, 4], ['sos', 5, 6000, 7], ['bos', 2, 1000, 10]];
     // return [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]];
 };

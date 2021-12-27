@@ -1,6 +1,4 @@
-# Create xlsx with multi worksheets and charts
-
-### Create PPTX
+# Create XLSX and PPTX with multi worksheets and charts
 
 #
 

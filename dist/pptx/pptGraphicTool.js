@@ -36,7 +36,8 @@ class PptGraphicTool {
         this.addChart = (slide, chartOpt, slideId) => __awaiter(this, void 0, void 0, function* () {
             const data = JSON.parse(JSON.stringify(this.buildData(chartOpt.data)));
             chartOpt.data = JSON.parse(JSON.stringify(data));
-            chartOpt.range = `A1:${this.getColName(data[0].length - 1)}${data.length}`;
+            chartOpt.labels = data[0].hasOwnProperty('values') ? true : chartOpt.labels;
+            chartOpt.range = `B1:${this.getColName(data[0].length - 1)}${data.length}`;
             const chartId = yield this.addContentTypeChart();
             yield this.addChartRef(chartId);
             yield this.createXlsxWithTableAndChart(data, chartId);
@@ -60,7 +61,7 @@ class PptGraphicTool {
             return data;
         };
         this.buildChart = (chartOpt, chartId) => __awaiter(this, void 0, void 0, function* () {
-            let readChart = chartOpt.type === 'line' ? yield this.xmlTool.readXml(`ppt/charts/chart1.xml`) : yield this.xmlTool.readXml(`ppt/charts/chart2.xml`);
+            let readChart = yield this.xmlTool.readXml(`ppt/charts/chart${chartOpt.type === 'line' ? 1 : 2}.xml`);
             const chartData = this.chartTool.buildChart(readChart, chartOpt, 'chart' + chartId);
             chartData['c:chartSpace']['c:externalData'].$['r:id'] = "rId" + chartId;
             this.xmlTool.write(`ppt/charts/chart${chartId}.xml`, chartData);

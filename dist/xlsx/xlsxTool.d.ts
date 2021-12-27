@@ -7,6 +7,7 @@ export declare class XlsxTool {
     removeTemplateSheets: () => Promise<void>;
     writeTable: (sheet: any, data: any[][], id: string) => Promise<void>;
     private addRow;
+    private addSharedStrings;
     private addSheetToParts;
     private getColName;
     private ColToNum;

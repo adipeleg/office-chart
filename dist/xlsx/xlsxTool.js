@@ -71,7 +71,27 @@ class XlsxTool {
                 rows.push(this.addRow(data, JSON.parse(JSON.stringify(rowTemplate)), idx + 2));
             });
             sheet.worksheet.sheetData = { row: rows };
+            yield this.addSharedStrings(data);
             return this.xmlTool.write(`xl/worksheets/sheet${id}.xml`, sheet);
+        });
+        this.addSharedStrings = (data) => __awaiter(this, void 0, void 0, function* () {
+            const str = yield this.xmlTool.readXml('xl/sharedStrings.xml');
+            data.forEach(row => {
+                row.forEach(element => {
+                    if (typeof element === 'string') {
+                        const inside = str['sst']['si'].find(it => {
+                            return it.t === element;
+                        });
+                        if (!inside) {
+                            str['sst']['si'].push({
+                                t: element
+                            });
+                            str['sst'].$.uniqueCount++;
+                        }
+                    }
+                });
+            });
+            yield this.xmlTool.write('xl/sharedStrings.xml', str);
         });
         this.addSheetToParts = (id) => __awaiter(this, void 0, void 0, function* () {
             const parts = yield this.xmlTool.readXml('[Content_Types].xml');

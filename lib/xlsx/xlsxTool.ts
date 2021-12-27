@@ -75,6 +75,8 @@ export class XlsxTool {
         })
         sheet.worksheet.sheetData = { row: rows };
 
+        await this.addSharedStrings(data);
+
         return this.xmlTool.write(`xl/worksheets/sheet${id}.xml`, sheet);
     }
 
@@ -92,6 +94,27 @@ export class XlsxTool {
 
         rowTemplate.c = cols;
         return rowTemplate;
+    }
+
+    private addSharedStrings = async (data: any[][]) => {
+        const str = await this.xmlTool.readXml('xl/sharedStrings.xml');
+        data.forEach(row => {
+            row.forEach(element => {
+                if (typeof element === 'string') {
+                    const inside = str['sst']['si'].find(it => {
+                        return it.t === element;
+                    })
+                    if (!inside) {
+                        str['sst']['si'].push({
+                            t: element
+                        })
+                        str['sst'].$.uniqueCount++;
+                    }
+                }
+            })
+        })
+
+        await this.xmlTool.write('xl/sharedStrings.xml', str);
     }
 
     private addSheetToParts = async (id: string) => {

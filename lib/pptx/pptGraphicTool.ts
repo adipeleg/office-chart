@@ -50,8 +50,9 @@ export class PptGraphicTool {
     public addChart = async (slide, chartOpt: IPPTChartData, slideId: number) => {
         const data = JSON.parse(JSON.stringify(this.buildData(chartOpt.data)));
         chartOpt.data = JSON.parse(JSON.stringify(data));
-        
-        chartOpt.range = `A1:${this.getColName(data[0].length - 1)}${data.length}`;
+        chartOpt.labels = data[0].hasOwnProperty('values') ? true : chartOpt.labels;
+
+        chartOpt.range = `B1:${this.getColName(data[0].length - 1)}${data.length}`;
 
         const chartId = await this.addContentTypeChart();
         await this.addChartRef(chartId);
@@ -85,7 +86,7 @@ export class PptGraphicTool {
     }
 
     private buildChart = async (chartOpt: IPPTChartData, chartId: number) => {
-        let readChart = chartOpt.type === 'line' ? await this.xmlTool.readXml(`ppt/charts/chart1.xml`) : await this.xmlTool.readXml(`ppt/charts/chart2.xml`);
+        let readChart = await this.xmlTool.readXml(`ppt/charts/chart${chartOpt.type === 'line' ? 1 : 2}.xml`);
         const chartData = this.chartTool.buildChart(readChart, chartOpt, 'chart' + chartId);
         chartData['c:chartSpace']['c:externalData'].$['r:id'] = "rId" + chartId;
 

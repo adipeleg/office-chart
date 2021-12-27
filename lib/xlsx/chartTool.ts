@@ -68,8 +68,8 @@ export class ChartTool {
             const data = JSON.parse(JSON.stringify(ser));
             let d = data[0] || data;
 
-            d['c:idx'] = i;
-            d['c:order'] = i;
+            d['c:idx'] = { $: { val: i - 1 } };
+            d['c:order'] = { $: { val: i - 1 } };
 
             if (opt.type !== 'scatter') {
                 d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$1:$${lastCol}$1`;
@@ -105,14 +105,15 @@ export class ChartTool {
             if (opt.labels) {
                 d['c:tx'] = {
                     'c:strRef': {
-                        'c:f': sheetName + '!$A$' + i
+                        'c:f': sheetName + `!$A$${i + 1}`
                     }
                 }
+
                 if (opt.hasOwnProperty('data')) {
                     d['c:tx']['c:strRef']['c:strCache'] = {
-                        'c:ptCount': { 'val': '1' },
+                        'c:ptCount': { $: { val: 1 } },
                         'c:pt': {
-                            $: { idx: `${i}` },
+                            $: { idx: 0 },
                             'c:v': opt['data'][i][0]
                         }
                     };
@@ -122,17 +123,31 @@ export class ChartTool {
             }
 
             readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'].push(d)
+            if (!!readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx'] && opt.type !== 'scatter') {
+                readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']['c:majorUnit'] = {};
+                readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']['c:minorUnit'] = {};
+
+                if (readChart['c:chartSpace']['c:chart']['c:legend']['c:layout']) {
+                    readChart['c:chartSpace']['c:chart']['c:legend']['c:layout']['c:manualLayout']['c:h'] = {
+                        $: { val: 0.08 * rowNum + 1 }
+                    }
+                }
+            }
         }
         return readChart;
     }
 
     private buildCache = (rowData: any[], labels: boolean) => {
-        const cache = { ['c:ptCount']: { $: { val: `${rowData.length}` } } }
+        const rowDataCopy = JSON.parse(JSON.stringify(rowData));
+        if (labels) {
+            rowDataCopy.shift();
+        }
+        const cache = { 'c:ptCount': { $: { val: `${rowDataCopy.length}` } } }
         cache['c:pt'] = [];
-        for (let i = labels ? 1 : 0; i < rowData.length; i++) {
+        for (let i = 0; i < rowDataCopy.length; i++) {
             cache['c:pt'].push({
                 $: { idx: `${i}` },
-                'c:v': rowData[i]
+                'c:v': rowDataCopy[i]
             })
         }
 
