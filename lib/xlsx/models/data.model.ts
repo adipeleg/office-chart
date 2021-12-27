@@ -11,7 +11,8 @@ export interface IData {
     marker?: {
         size?: number;
         shape?: string;
-    }
+    },
+    lineWidth?: number;
 }
 
 export interface IPPTChartData {
@@ -28,7 +29,8 @@ export interface IPPTChartData {
     marker?: {
         size?: number;
         shape?: string;
-    }
+    },
+    lineWidth?: number;
 }
 
 export interface IPPTChartDataVal {

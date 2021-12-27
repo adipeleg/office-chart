@@ -15,7 +15,7 @@ npm install office-chart
 Generate xlsx and write chart to file
 
 ```js
-import { IData } from 'office-chart';
+import { IData } from "office-chart";
 import { XlsxGenerator } from "office-chart";
 
 const gen = new XlsxGenerator();
@@ -26,33 +26,34 @@ const sheet1 = await gen.createWorksheet("sheet1");
 
 const sheet2 = await gen.createWorksheet("sheetWithChart2");
 
-const header = ['h', 'b', 'c', 'd'];
-const row1 = ['label1', 2, 3, 4];
-const row2 = ['label2', 5, 6, 7];
+const header = ["h", "b", "c", "d"];
+const row1 = ["label1", 2, 3, 4];
+const row2 = ["label2", 5, 6, 7];
 
 await sheet2.addTable([header, row1, row2]);
 
 const opt: IData = {
-            title: {
-                name: 'testChart line',
-                color: '8ab4f8',
-                size: 5000
-            },
-            range: 'B1:D3',
-            type: 'line',
-            rgbColors: ['8ab4f8', 'ff7769'],
-            labels: true, //table contains labels
-            marker: {
-                size: 4,
-                shape: 'square' //marker shapes, can be circle, diamond, star
-            }
-        }
+  title: {
+    name: "testChart line",
+    color: "8ab4f8",
+    size: 5000,
+  },
+  range: "B1:D3",
+  type: "line",
+  rgbColors: ["8ab4f8", "ff7769"],
+  labels: true, //table contains labels
+  marker: {
+    size: 4,
+    shape: "square", //marker shapes, can be circle, diamond, star
+  },
+  lineWidth: 20000,
+};
 
-await sheet2.addChart(opt)
+await sheet2.addChart(opt);
 
 const sheet3 = await gen.createWorksheet("sheet3");
 
-await gen.generate(__dirname + '/test', 'file');
+await gen.generate(__dirname + "/test", "file");
 // you can also generate buffer
 ```
 
@@ -63,9 +64,8 @@ Generate ppt with slides and text
 #
 
 ```js
-
-import { PptxGenetator } from 'office-chart';
-import { IPPTChartData } from 'office-chart/dist/xlsx/models/data.model';
+import { PptxGenetator } from "office-chart";
+import { IPPTChartData } from "office-chart/dist/xlsx/models/data.model";
 
 const gen = new PptxGenetator();
 
@@ -108,7 +108,7 @@ const opt: IPPTChartData = {
   //       }, {
   //           name: 'lab2 test',
   //           values: [4, 5, 6, 7, 8],
-  //           labels: ['h', 'b', 'c', 'd', 'e'] 
+  //           labels: ['h', 'b', 'c', 'd', 'e']
   //       }, {
   //           name: 'lab3 test',
   //           values: [9, 1, 2, 4, 10],
@@ -116,7 +116,12 @@ const opt: IPPTChartData = {
   //       }
   //   ]
   rgbColors: ["8ab4f8", "ff7769"],
-  labels: true
+  lineWidth: 20000,
+  marker: {
+    shape: "circle",
+    size: 4,
+  },
+  labels: true,
 };
 
 const slide2 = await gen.createSlide();
@@ -131,7 +136,11 @@ await gen.generate(__dirname + "/test2", "file");
 #### This is an open source project, you can contribute by going to: https://github.com/adipeleg/office-chart.
 
 #
+
 #### currently only column, line, pie and scatter charts are supported in Xlsx.
+
 #### currently only column, line chart are supported in PPTX.
+
 #
+
 #### Enjoy and don't forget to add a star :)

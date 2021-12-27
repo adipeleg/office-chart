@@ -50,6 +50,11 @@ describe('create pptx', () => {
             data: getShotData(),
             rgbColors: ['8ab4f8', 'ff7769'],
             labels: false,
+            marker: {
+                shape: 'circle',
+                size: 4
+            },
+            lineWidth: 20000
         }
         await slide5.addChart(opt);
         await slide5.addTitle('line chart', {
