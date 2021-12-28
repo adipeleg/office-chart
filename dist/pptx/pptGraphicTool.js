@@ -28,7 +28,7 @@ class PptGraphicTool {
                     col.$.w = opt.colWidth;
                 });
             }
-            this.addTableGraphicElements(slideWithTable, opt);
+            this.addLocationGraphicElements(slideWithTable, opt);
             const header = data.shift();
             const rows = [];
             rows.push(this.addRow(header, JSON.parse(JSON.stringify(rowTemplate)), colTemplate));
@@ -43,15 +43,17 @@ class PptGraphicTool {
             slide['p:sld']['p:cSld']['p:spTree']['p:graphicFrame'] = slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame'];
             return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
         });
-        this.addTableGraphicElements = (slideWithTable, opt) => {
-            //<a:off x="7978809" y="2955375"/>
-            //<a:ext cx = "9525001" cy = "9296401" />
-            const locationElement = slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['p:xfrm'];
-            slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['p:xfrm'] = {
+        this.addLocationGraphicElements = (slide, opt) => {
+            const locationElement = slide['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['p:xfrm'];
+            slide['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['p:xfrm'] = {
                 'a:off': {
                     $: {
                         x: (opt === null || opt === void 0 ? void 0 : opt.x) || locationElement['a:off'].$.x,
                         y: (opt === null || opt === void 0 ? void 0 : opt.y) || locationElement['a:off'].$.y,
+                    }
+                },
+                'a:ext': {
+                    $: {
                         cx: (opt === null || opt === void 0 ? void 0 : opt.cx) || locationElement['a:ext'].$.cx,
                         cy: (opt === null || opt === void 0 ? void 0 : opt.cy) || locationElement['a:ext'].$.cy
                     }
@@ -70,6 +72,9 @@ class PptGraphicTool {
             const slideWithChart = yield this.xmlTool.readXml('ppt/slides/slide3.xml');
             const graphicFrame = slideWithChart['p:sld']['p:cSld']['p:spTree']['p:graphicFrame'];
             graphicFrame['a:graphic']['a:graphicData']['c:chart'].$['r:id'] = "rId" + chartId;
+            if (chartOpt === null || chartOpt === void 0 ? void 0 : chartOpt.location) {
+                this.addLocationGraphicElements(slideWithChart, chartOpt.location);
+            }
             slide['p:sld']['p:cSld']['p:spTree']['p:graphicFrame'] = graphicFrame;
             this.xmlTool.write(`ppt/slides/slide${slideId}.xml`, slide);
             yield this.addSlideChartRel(slideId, chartId);

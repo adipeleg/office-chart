@@ -31,6 +31,12 @@ export interface IPPTChartData {
         shape?: string;
     },
     lineWidth?: number;
+    location?: {
+        x?: string;
+        y?: string;
+        cx?: string;
+        cy?: string;
+    }
 }
 
 export interface IPPTChartDataVal {

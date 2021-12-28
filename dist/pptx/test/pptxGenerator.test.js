@@ -18,6 +18,8 @@ describe('create pptx', () => {
         slide.addTitle('this is title', {
             x: '0',
             y: '0',
+            cx: '4000000',
+            cy: '600000',
             color: 'FF0000',
             size: 4000
         });
@@ -65,7 +67,11 @@ describe('create pptx', () => {
                 shape: 'circle',
                 size: 4
             },
-            lineWidth: 20000
+            lineWidth: 20000,
+            location: {
+                x: '1000',
+                y: '1000'
+            }
         };
         yield slide5.addChart(opt);
         yield slide5.addTitle('line chart', {

@@ -9,7 +9,7 @@ export declare class PptGraphicTool {
     constructor(xmlTool: XmlTool, xlsxGenerator: XlsxGenerator, chartTool: ChartTool);
     writeTable: (id: number, slide: any, data: any[][], opt: IPptTableOpt) => Promise<void>;
     private addRow;
-    private addTableGraphicElements;
+    private addLocationGraphicElements;
     addChart: (slide: any, chartOpt: IPPTChartData, slideId: number) => Promise<void>;
     private buildData;
     private buildChart;

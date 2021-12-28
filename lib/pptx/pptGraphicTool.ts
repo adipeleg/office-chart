@@ -24,7 +24,7 @@ export class PptGraphicTool {
             })
         }
 
-        this.addTableGraphicElements(slideWithTable, opt);
+        this.addLocationGraphicElements(slideWithTable, opt);
 
         const header = data.shift();
 
@@ -58,15 +58,17 @@ export class PptGraphicTool {
         return rowTemplate;
     }
 
-    private addTableGraphicElements = (slideWithTable, opt: IPptTableOpt) => {
-        //<a:off x="7978809" y="2955375"/>
-        //<a:ext cx = "9525001" cy = "9296401" />
-        const locationElement = slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['p:xfrm'];
-        slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['p:xfrm'] = {
+    private addLocationGraphicElements = (slide, opt: IPptTableOpt) => {
+        const locationElement = slide['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['p:xfrm'];
+        slide['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['p:xfrm'] = {
             'a:off': {
                 $: {
                     x: opt?.x || locationElement['a:off'].$.x,
                     y: opt?.y || locationElement['a:off'].$.y,
+                }
+            },
+            'a:ext': {
+                $: {
                     cx: opt?.cx || locationElement['a:ext'].$.cx,
                     cy: opt?.cy || locationElement['a:ext'].$.cy
                 }
@@ -91,6 +93,11 @@ export class PptGraphicTool {
 
         const graphicFrame = slideWithChart['p:sld']['p:cSld']['p:spTree']['p:graphicFrame'];
         graphicFrame['a:graphic']['a:graphicData']['c:chart'].$['r:id'] = "rId" + chartId;
+
+        if (chartOpt?.location) {
+            this.addLocationGraphicElements(slideWithChart, chartOpt.location)
+        }
+
         slide['p:sld']['p:cSld']['p:spTree']['p:graphicFrame'] = graphicFrame;
 
         this.xmlTool.write(`ppt/slides/slide${slideId}.xml`, slide);
