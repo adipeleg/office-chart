@@ -1,4 +1,4 @@
-import { IData, IPPTChartData } from './../xlsx/models/data.model';
+import { IData, IPPTChartData, IPptTableOpt } from './../xlsx/models/data.model';
 import { XlsxGenerator } from './../xlsx/xlsxGenerator';
 import { PptTool } from './pptTool';
 import { XmlTool } from "../xmlTool";
@@ -26,7 +26,7 @@ export class PptxGenetator {
             addTitle: async (text: string, opt?: ITextModel) => await this.pptTool.addTitle(slide, id, text, opt),
             addSubTitle: async (text: string, opt?: ITextModel) => await this.pptTool.addSubTitle(slide, id, text, opt),
             addText: async (text: string, opt?: ITextModel) => await this.pptTool.addText(slide, id, text, opt),
-            addTable: async (data: any[][]) => { return this.pptGraphicTool.writeTable(id, slide, data) },
+            addTable: async (data: any[][], opt?: IPptTableOpt) => { return this.pptGraphicTool.writeTable(id, slide, data, opt) },
             addChart: async (opt: IPPTChartData) => await this.pptGraphicTool.addChart(slide, opt, id)
         }
     }

@@ -90,7 +90,12 @@ const header = ["h", "b", "c", "d"];
 const row1 = ["label1", 2, 3, 4];
 const row2 = ["label2", 5, 6, 7];
 
-await slide.addTable([header, row1, row2]);
+await slide.addTable([header, row1, row2], {
+  x: "1000", // left
+  y: "1000", // top
+  colWidth: 1081250,
+  rowHeight: 1059279,
+});
 
 const opt: IPPTChartData = {
   title: {

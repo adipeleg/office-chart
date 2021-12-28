@@ -33,7 +33,7 @@ class PptxGenetator {
                 addTitle: (text, opt) => __awaiter(this, void 0, void 0, function* () { return yield this.pptTool.addTitle(slide, id, text, opt); }),
                 addSubTitle: (text, opt) => __awaiter(this, void 0, void 0, function* () { return yield this.pptTool.addSubTitle(slide, id, text, opt); }),
                 addText: (text, opt) => __awaiter(this, void 0, void 0, function* () { return yield this.pptTool.addText(slide, id, text, opt); }),
-                addTable: (data) => __awaiter(this, void 0, void 0, function* () { return this.pptGraphicTool.writeTable(id, slide, data); }),
+                addTable: (data, opt) => __awaiter(this, void 0, void 0, function* () { return this.pptGraphicTool.writeTable(id, slide, data, opt); }),
                 addChart: (opt) => __awaiter(this, void 0, void 0, function* () { return yield this.pptGraphicTool.addChart(slide, opt, id); })
             };
         });

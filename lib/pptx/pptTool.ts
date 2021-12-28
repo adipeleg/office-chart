@@ -150,18 +150,22 @@ export class PptTool {
     }
 
     private addColorAndSize = (data, opt: ITextModel) => {
+        data['p:txBody']['a:lstStyle'] = {
+            'a:lvl1pPr': {
+                'a:defRPr': {
+                    $: { sz: "4000" }
+                }
+            }
+        }
         if (opt?.color) {
-            data['p:txBody']['a:p']['a:r']['a:rPr'] = {
-                $: { sz: "1500" },
-                'a:solidFill': { 'a:srgbClr': { $: { val: opt.color } } }
+            data['p:txBody']['a:lstStyle']['a:lvl1pPr']['a:defRPr']['a:solidFill'] = {
+                'a:srgbClr': {
+                    $: { val: opt.color }
+                }
             };
         }
         if (opt?.size) {
-            if (data['p:txBody']['a:p']['a:r']['a:rPr']) {
-                data['p:txBody']['a:p']['a:r']['a:rPr'].$.sz = opt.size.toString();
-            } else {
-                data['p:txBody']['a:p']['a:r']['a:rPr'] = { $: { sz: opt.size.toString() } };
-            }
+            data['p:txBody']['a:lstStyle']['a:lvl1pPr']['a:defRPr'].$.sz = opt.size;
         }
     }
 }

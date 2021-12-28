@@ -36,3 +36,11 @@ export interface IPPTChartDataVal {
     name: string;
     values: number[];
 }
+export interface IPptTableOpt {
+    x?: string;
+    y?: string;
+    cx?: string;
+    cy?: string;
+    colWidth?: number;
+    rowHeight?: number;
+}

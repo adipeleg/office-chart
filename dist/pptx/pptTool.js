@@ -127,19 +127,22 @@ class PptTool {
             return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
         });
         this.addColorAndSize = (data, opt) => {
+            data['p:txBody']['a:lstStyle'] = {
+                'a:lvl1pPr': {
+                    'a:defRPr': {
+                        $: { sz: "4000" }
+                    }
+                }
+            };
             if (opt === null || opt === void 0 ? void 0 : opt.color) {
-                data['p:txBody']['a:p']['a:r']['a:rPr'] = {
-                    $: { sz: "1500" },
-                    'a:solidFill': { 'a:srgbClr': { $: { val: opt.color } } }
+                data['p:txBody']['a:lstStyle']['a:lvl1pPr']['a:defRPr']['a:solidFill'] = {
+                    'a:srgbClr': {
+                        $: { val: opt.color }
+                    }
                 };
             }
             if (opt === null || opt === void 0 ? void 0 : opt.size) {
-                if (data['p:txBody']['a:p']['a:r']['a:rPr']) {
-                    data['p:txBody']['a:p']['a:r']['a:rPr'].$.sz = opt.size.toString();
-                }
-                else {
-                    data['p:txBody']['a:p']['a:r']['a:rPr'] = { $: { sz: opt.size.toString() } };
-                }
+                data['p:txBody']['a:lstStyle']['a:lvl1pPr']['a:defRPr'].$.sz = opt.size;
             }
         };
     }

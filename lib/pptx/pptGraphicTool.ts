@@ -1,6 +1,6 @@
 import { ChartTool } from './../xlsx/chartTool';
 import { XlsxGenerator } from './../xlsx/xlsxGenerator';
-import { IData, IPPTChartData, IPPTChartDataVal } from './../xlsx/models/data.model';
+import { IData, IPPTChartData, IPPTChartDataVal, IPptTableOpt } from './../xlsx/models/data.model';
 import { XmlTool } from "../xmlTool";
 
 export class PptGraphicTool {
@@ -8,12 +8,24 @@ export class PptGraphicTool {
         private xlsxGenerator: XlsxGenerator,
         private chartTool: ChartTool) { }
 
-    public writeTable = async (id: number, slide: any, data: any[][]) => {
+    public writeTable = async (id: number, slide: any, data: any[][], opt: IPptTableOpt) => {
         const slideWithTable = await this.xmlTool.readXml('ppt/slides/slide2.xml');
 
         const rowTemplate = slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['a:graphic']['a:graphicData']['a:tbl']['a:tr'][1];
         const colTemplate = rowTemplate['a:tc'][1];
 
+        if (opt?.rowHeight) {
+            rowTemplate.$.h = opt?.rowHeight;
+        }
+        if (opt?.colWidth) {
+            const gridColVals = slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['a:graphic']['a:graphicData']['a:tbl']['a:tblGrid']['a:gridCol'];
+            gridColVals.forEach(col => {
+                console.log(col)
+                col.$.w = opt.colWidth;
+            })
+        }
+
+        this.addTableGraphicElements(slideWithTable, opt);
 
         const header = data.shift();
 
@@ -45,6 +57,22 @@ export class PptGraphicTool {
 
         rowTemplate['a:tc'] = JSON.parse(JSON.stringify(cols));
         return rowTemplate;
+    }
+
+    private addTableGraphicElements = (slideWithTable, opt: IPptTableOpt) => {
+        //<a:off x="7978809" y="2955375"/>
+        //<a:ext cx = "9525001" cy = "9296401" />
+        const locationElement = slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['p:xfrm'];
+        slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['p:xfrm'] = {
+            'a:off': {
+                $: {
+                    x: opt?.x || locationElement['a:off'].$.x,
+                    y: opt?.y || locationElement['a:off'].$.y,
+                    cx: opt?.cx || locationElement['a:ext'].$.cx,
+                    cy: opt?.cy || locationElement['a:ext'].$.cy
+                }
+            }
+        }
     }
 
     public addChart = async (slide, chartOpt: IPPTChartData, slideId: number) => {

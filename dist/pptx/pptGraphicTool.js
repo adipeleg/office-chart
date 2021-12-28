@@ -15,10 +15,21 @@ class PptGraphicTool {
         this.xmlTool = xmlTool;
         this.xlsxGenerator = xlsxGenerator;
         this.chartTool = chartTool;
-        this.writeTable = (id, slide, data) => __awaiter(this, void 0, void 0, function* () {
+        this.writeTable = (id, slide, data, opt) => __awaiter(this, void 0, void 0, function* () {
             const slideWithTable = yield this.xmlTool.readXml('ppt/slides/slide2.xml');
             const rowTemplate = slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['a:graphic']['a:graphicData']['a:tbl']['a:tr'][1];
             const colTemplate = rowTemplate['a:tc'][1];
+            if (opt === null || opt === void 0 ? void 0 : opt.rowHeight) {
+                rowTemplate.$.h = opt === null || opt === void 0 ? void 0 : opt.rowHeight;
+            }
+            if (opt === null || opt === void 0 ? void 0 : opt.colWidth) {
+                const gridColVals = slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['a:graphic']['a:graphicData']['a:tbl']['a:tblGrid']['a:gridCol'];
+                gridColVals.forEach(col => {
+                    console.log(col);
+                    col.$.w = opt.colWidth;
+                });
+            }
+            this.addTableGraphicElements(slideWithTable, opt);
             const header = data.shift();
             const rows = [];
             rows.push(this.addRow(header, JSON.parse(JSON.stringify(rowTemplate)), colTemplate));
@@ -33,6 +44,21 @@ class PptGraphicTool {
             slide['p:sld']['p:cSld']['p:spTree']['p:graphicFrame'] = slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame'];
             return this.xmlTool.write(`ppt/slides/slide${id}.xml`, slide);
         });
+        this.addTableGraphicElements = (slideWithTable, opt) => {
+            //<a:off x="7978809" y="2955375"/>
+            //<a:ext cx = "9525001" cy = "9296401" />
+            const locationElement = slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['p:xfrm'];
+            slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['p:xfrm'] = {
+                'a:off': {
+                    $: {
+                        x: (opt === null || opt === void 0 ? void 0 : opt.x) || locationElement['a:off'].$.x,
+                        y: (opt === null || opt === void 0 ? void 0 : opt.y) || locationElement['a:off'].$.y,
+                        cx: (opt === null || opt === void 0 ? void 0 : opt.cx) || locationElement['a:ext'].$.cx,
+                        cy: (opt === null || opt === void 0 ? void 0 : opt.cy) || locationElement['a:ext'].$.cy
+                    }
+                }
+            };
+        };
         this.addChart = (slide, chartOpt, slideId) => __awaiter(this, void 0, void 0, function* () {
             const data = JSON.parse(JSON.stringify(this.buildData(chartOpt.data)));
             chartOpt.data = JSON.parse(JSON.stringify(data));

@@ -63,7 +63,7 @@ export class ChartTool {
 
         const ser = { ...readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] };
         readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] = [];
-
+        // delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:layout']
         for (let i = 1; i < rowNum; i++) {
             const data = JSON.parse(JSON.stringify(ser));
             let d = data[0] || data;
@@ -137,9 +137,10 @@ export class ChartTool {
                 readChart['c:chartSpace']['c:chart']['c:plotArea']['c:valAx']['c:minorUnit'] = {};
 
                 if (readChart['c:chartSpace']['c:chart']['c:legend']['c:layout']) {
-                    readChart['c:chartSpace']['c:chart']['c:legend']['c:layout']['c:manualLayout']['c:h'] = {
-                        $: { val: 0.08 * rowNum + 1 }
-                    }
+                    delete readChart['c:chartSpace']['c:chart']['c:legend']['c:layout']
+                    // readChart['c:chartSpace']['c:chart']['c:legend']['c:layout']['c:manualLayout']['c:h'] = {
+                    //     $: { val: 0.08 * rowNum + 1 }
+                    // }
                 }
             }
         }

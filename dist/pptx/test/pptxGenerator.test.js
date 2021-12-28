@@ -40,7 +40,12 @@ describe('create pptx', () => {
             y: '0'
         });
         const slide2 = yield gen.createSlide();
-        yield slide2.addTable(getShotData());
+        yield slide2.addTable(getShotData(), {
+            x: '1000',
+            y: '1000',
+            colWidth: 1081250,
+            rowHeight: 1059279
+        });
         const slide3 = yield gen.createSlide();
         yield slide3.addTable(getShotData2());
         const slide4 = yield gen.createSlide();
@@ -149,19 +154,19 @@ const addNewData = () => {
             shape: 'circle'
         },
         data: [{
-                name: 'c1',
+                name: 'c1_long_long_long',
                 labels: ['May', 'Aug', 'Nov'],
                 values: [17362, 28283, 12842]
             }, {
-                name: 'c2',
+                name: 'c2_long_long_long long_longlong_longlong_long',
                 labels: ['May', 'Aug', 'Nov'],
                 values: [-29.548774549586106, -72.19879488464903, -33.88251042578386]
             }, {
-                name: 'c3',
+                name: 'c3_long_long_long',
                 labels: ['May', 'Aug', 'Nov'],
                 values: [17362, 282830, 12842]
             }, {
-                name: 'c4',
+                name: 'c4_long_long_long',
                 labels: ['May', 'Aug', 'Nov'],
                 values: [173620, 28283, 12842]
             }]

@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { IPPTChartData } from './../xlsx/models/data.model';
+import { IPPTChartData, IPptTableOpt } from './../xlsx/models/data.model';
 import { ITextModel } from './models/text.model';
 export declare class PptxGenetator {
     private xmlTool;
@@ -13,7 +13,7 @@ export declare class PptxGenetator {
         addTitle: (text: string, opt?: ITextModel) => Promise<void>;
         addSubTitle: (text: string, opt?: ITextModel) => Promise<void>;
         addText: (text: string, opt?: ITextModel) => Promise<void>;
-        addTable: (data: any[][]) => Promise<void>;
+        addTable: (data: any[][], opt?: IPptTableOpt) => Promise<void>;
         addChart: (opt: IPPTChartData) => Promise<void>;
     }>;
     generate: (file: string, type: 'file' | 'buffer') => Promise<Buffer>;
