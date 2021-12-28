@@ -20,7 +20,6 @@ export class PptGraphicTool {
         if (opt?.colWidth) {
             const gridColVals = slideWithTable['p:sld']['p:cSld']['p:spTree']['p:graphicFrame']['a:graphic']['a:graphicData']['a:tbl']['a:tblGrid']['a:gridCol'];
             gridColVals.forEach(col => {
-                console.log(col)
                 col.$.w = opt.colWidth;
             })
         }
