@@ -1,12 +1,13 @@
 {
   "name": "office-chart",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "create office xlsx and pptx with tables and charts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "/dist"
   ],
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/adipeleg/office-chart.git"
@@ -46,6 +47,8 @@
     "ts-jest": "^27.1.1",
     "@types/node": "^16.11.12"
   },
-  "author": "",
-  "license": "ISC"
+  "author": {
+    "name": "Adi Peleg",
+    "url": "https://github.com/adipeleg"
+  }
 }
