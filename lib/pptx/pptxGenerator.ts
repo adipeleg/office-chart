@@ -23,9 +23,9 @@ export class PptxGenetator {
             data: slide,
             id: id,
             tData: [],
-            addTitle: async (text: string, opt?: ITextModel) => await this.pptTool.addTitle(slide, id, text, opt),
-            addSubTitle: async (text: string, opt?: ITextModel) => await this.pptTool.addSubTitle(slide, id, text, opt),
-            addText: async (text: string, opt?: ITextModel) => await this.pptTool.addText(slide, id, text, opt),
+            addTitle: async (text?: string, opt?: ITextModel) => await this.pptTool.addTitle(slide, id, text, opt),
+            addSubTitle: async (text?: string, opt?: ITextModel) => await this.pptTool.addSubTitle(slide, id, text, opt),
+            addText: async (text?: string, opt?: ITextModel) => await this.pptTool.addText(slide, id, text, opt),
             addTable: async (data: any[][], opt?: IPptTableOpt) => { return this.pptGraphicTool.writeTable(id, slide, data, opt) },
             addChart: async (opt: IPPTChartData) => await this.pptGraphicTool.addChart(slide, opt, id)
         }

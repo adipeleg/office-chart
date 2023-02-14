@@ -10,9 +10,9 @@ export declare class PptxGenetator {
         data: any;
         id: number;
         tData: any[];
-        addTitle: (text: string, opt?: ITextModel) => Promise<void>;
-        addSubTitle: (text: string, opt?: ITextModel) => Promise<void>;
-        addText: (text: string, opt?: ITextModel) => Promise<void>;
+        addTitle: (text?: string, opt?: ITextModel) => Promise<void>;
+        addSubTitle: (text?: string, opt?: ITextModel) => Promise<void>;
+        addText: (text?: string, opt?: ITextModel) => Promise<void>;
         addTable: (data: any[][], opt?: IPptTableOpt) => Promise<void>;
         addChart: (opt: IPPTChartData) => Promise<void>;
     }>;

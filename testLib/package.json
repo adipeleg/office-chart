@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node testOfficeChart.ts"
+    "start-xlsx": "ts-node testOfficeChartXLSX.ts",
+    "start-pptx": "ts-node testOfficeChartPPTX.ts"
   },
   "author": "",
   "license": "ISC",

@@ -22,6 +22,7 @@ class XlsxGenerator {
             return this.xmlTool.readOriginal('xlsx');
         });
         this.createWorksheet = (name) => __awaiter(this, void 0, void 0, function* () {
+            name = name.replace(' ', '_');
             const id = yield this.xlsxTool.addSheetToWb(name);
             const sheet = yield this.xlsxTool.createSheet(id);
             return {
