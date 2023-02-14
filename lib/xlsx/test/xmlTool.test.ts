@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { XmlTool } from '../../xmlTool';
-xdescribe('check xmlTool', () => {
+describe('check xmlTool', () => {
 
     it('', async () => {
         const tool = new XmlTool();

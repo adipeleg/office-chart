@@ -1,2 +1,5 @@
 node_modules/
 templates/
+test*.xlsx
+test*.pptx
+.DS_Store

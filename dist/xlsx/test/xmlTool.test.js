@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const xmlTool_1 = require("../../xmlTool");
-xdescribe('check xmlTool', () => {
+describe('check xmlTool', () => {
     it('', () => __awaiter(void 0, void 0, void 0, function* () {
         const tool = new xmlTool_1.XmlTool();
         yield tool.readOriginal('xlsx');

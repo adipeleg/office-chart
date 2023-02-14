@@ -111,7 +111,7 @@ describe('create pptx', () => {
 })
 
 const getShotData = () => {
-    return [['', 'b', 'c', 'd', 'e'], [1, 2, 30, 40, 5], [4, 5, 600, 70, 800], [4, 5, 5500, 70, 20]];
+    return [['', 'b', 'c', 'd', 'e'], [1, 2, 30, 40, 5], [4, 5, -600, 70, 800], [4, 5, -5500, 70, 20]];
 }
 
 
@@ -139,7 +139,7 @@ const getDataIPPTChartDataVal = (): IPPTChartDataVal[] => {
             labels: ['h', 'b', 'c', 'd', 'e']
         }, {
             name: 'lab3 test',
-            values: [9, 1, 2, 4, 10],
+            values: [9, 1, 2, 4, -10],
             labels: ['h', 'b', 'c', 'd', 'e']
         }, {
             name: 'lab4 test',
@@ -147,7 +147,7 @@ const getDataIPPTChartDataVal = (): IPPTChartDataVal[] => {
             labels: ['h', 'b', 'c', 'd', 'e']
         }, {
             name: 'lab5 test',
-            values: [9, 1, 2, 4, 10],
+            values: [9, 1, 2, -4, 10],
             labels: ['h', 'b', 'c', 'd', 'e']
         }
     ]
@@ -173,7 +173,7 @@ const addNewData = (): IPPTChartData => {
         }, {
             name: 'c3_long_long_long',
             labels: ['May', 'Aug', 'Nov'],
-            values: [17362, 282830, 12842]
+            values: [17362, -282830, 12842]
         }, {
             name: 'c4_long_long_long',
             labels: ['May', 'Aug', 'Nov'],

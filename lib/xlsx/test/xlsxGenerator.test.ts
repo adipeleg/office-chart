@@ -89,6 +89,6 @@ const getLongData = () => {
     return data;
 }
 const getShotData = () => {
-    return [['h', 'b', 'c', 'd'], ['tot', 2, 300, 4], ['sos', 5, 6000, 7], ['bos', 2, 1000, 10]];
+    return [['h', 'b', 'c', 'd'], ['tot', 2, -300, 4], ['sos', 5, 6000, 7], ['bos', 2, 1000, 10]];
     // return [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]];
 }
