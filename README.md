@@ -139,7 +139,7 @@ await gen.generate(__dirname + "/test2", "file");
 ```
 
 #### This is an open source project, you can contribute by going to: https://github.com/adipeleg/office-chart.
-
+#### This is a npm package you are welcome to use: https://www.npmjs.com/package/office-chart 
 #
 
 #### currently only column, line, pie and scatter charts are supported in Xlsx.
