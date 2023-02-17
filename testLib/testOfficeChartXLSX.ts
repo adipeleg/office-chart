@@ -1,20 +1,25 @@
 import { IData } from 'office-chart';
 import { XlsxGenerator } from "office-chart";
-
+import * as _ from "lodash";
 const addData = async (sheet2, chartName?: string) => {
-    const header = ['h', 'b', 'c', 'd'];
-    const row1 = ['label1', 2, 3, 4];
-    const row2 = ['label2', 5, 6, 7];
+    const length = 80;
+    const head = _.range(1, length).map(it => it.toString());
+    const header = ['h', 'b', 'c', 'd'].concat(head);
+    const row1 = ['label1', 2, 3, 4].concat(_.range(1, length));
+    const row2 = ['label2', 5, 6, 7].concat(_.range(length + 1, 2 * length));
+    const row3 = ['label3', 5, 7, 8].concat(_.range(length + 1, 2 * length));
+    console.log(header.length, row1.length, row2.length)
 
-    await sheet2.addTable([header, row1, row2]);
 
+    await sheet2.addTable([header, row1, row2, row3]);
+    
     const opt: IData = {
         title: {
             name: chartName || 'testChart line',
             color: '8ab4f8',
             size: 5000
         },
-        range: 'B1:D3',
+        range: 'B:D4',
         type: 'line',
         rgbColors: ['8ab4f8', 'ff7769'],
         labels: true, //table contains labels

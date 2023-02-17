@@ -36,6 +36,7 @@ export class ChartTool {
     }
 
     public buildChart = (readChart: any, opt: IData | IPPTChartData, sheetName: string) => {
+        sheetName = `'${sheetName}'`;
         readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = opt.title.name;
         if (opt.title.color) {
             readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:rPr']['a:solidFill']['a:srgbClr'].$.val = opt.title.color
@@ -46,16 +47,25 @@ export class ChartTool {
 
         const chartType = `c:${opt.type}Chart`;
 
-        let rowNum = 1;
-        let lastCol = 'A';
-        let firstCol = 'A';
+        let rowNum = '';
+        let lastCol = '';
+        let firstCol = '';
         try {
             const splitRange: string[] = opt.range.split(':');
-            const first = splitRange[0]
-            firstCol = first[0]
-            const sec = splitRange[1];
-            lastCol = sec[0];
-            rowNum = parseInt(sec.substring(1));
+            Array.from(splitRange[0]).forEach(letter => {
+                const notNumCheck = isNaN(parseInt(letter));
+                if (notNumCheck) {
+                    firstCol += letter
+                }
+            })
+            Array.from(splitRange[1]).forEach(letter => {
+                const letterNum = parseInt(letter);
+                if (isNaN(letterNum)) {
+                    lastCol += letter
+                } else {
+                    rowNum += letter
+                }
+            })
         } catch {
             console.log('range is not right');
             throw Error('range is not right');
@@ -64,7 +74,7 @@ export class ChartTool {
         const ser = { ...readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] };
         readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] = [];
         // delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:layout']
-        for (let i = 1; i < rowNum; i++) {
+        for (let i = 1; i < parseInt(rowNum); i++) {
             const data = JSON.parse(JSON.stringify(ser));
             let d = data[0] || data;
 

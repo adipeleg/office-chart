@@ -12,7 +12,6 @@ export class XlsxGenerator {
     }
 
     public createWorksheet = async (name: string) => {
-        name = name.replace(' ', '_');
         const id = await this.xlsxTool.addSheetToWb(name);
         const sheet = await this.xlsxTool.createSheet(id);
         return {

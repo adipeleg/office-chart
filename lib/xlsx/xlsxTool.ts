@@ -85,7 +85,7 @@ export class XlsxTool {
         const cols: any[] = [];
         rowData.forEach((data, col) => {
             const type = typeof data === 'string' ? 's' : '';
-            const c = { '$': { r: this.getColName(col) + (index), s: '1' }, v: data }
+            const c = { '$': { r: this.getColName(col) + (col <= 22 ? index : this.getColName(col)), s: '1' }, v: data }
             if (type === 's') {
                 c.$['t'] = 'str';
             }
