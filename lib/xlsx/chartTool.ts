@@ -48,6 +48,7 @@ export class ChartTool {
         const chartType = `c:${opt.type}Chart`;
 
         let rowNum = '';
+        let firstRow = 1;
         let lastCol = '';
         let firstCol = '';
         try {
@@ -56,6 +57,8 @@ export class ChartTool {
                 const notNumCheck = isNaN(parseInt(letter));
                 if (notNumCheck) {
                     firstCol += letter
+                } else {
+                    firstRow = parseInt(letter)
                 }
             })
             Array.from(splitRange[1]).forEach(letter => {
@@ -74,7 +77,11 @@ export class ChartTool {
         const ser = { ...readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] };
         readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] = [];
         // delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:layout']
-        for (let i = 1; i < parseInt(rowNum); i++) {
+
+        //deleta extra 'dd' in line template
+        delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:catAx']?.['c:title']?.['c:tx']['c:rich']['a:p']['a:r']['a:t']
+
+        for (let i = firstRow; i < parseInt(rowNum); i++) {
             const data = JSON.parse(JSON.stringify(ser));
             let d = data[0] || data;
 
@@ -82,7 +89,8 @@ export class ChartTool {
             d['c:order'] = { $: { val: i - 1 } };
 
             if (opt.type !== 'scatter') {
-                d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$1:$${lastCol}$1`;
+                // default use 1 row for x axis
+                d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$${firstRow}:$${lastCol}$${firstRow} `;
                 d['c:val']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$${(i + 1)}:$${lastCol}$${(i + 1)}`;
                 if (opt.hasOwnProperty('data')) {
                     d['c:cat']['c:strRef']['c:strCache'] = this.buildCache(opt['data'][0], opt.labels);
@@ -124,7 +132,7 @@ export class ChartTool {
             if (opt.labels) {
                 d['c:tx'] = {
                     'c:strRef': {
-                        'c:f': sheetName + `!$A$${i + 1}`
+                        'c:f': sheetName + `!$${String.fromCharCode(firstCol.charCodeAt(0) - 1)}$${i + 1}`
                     }
                 }
 
