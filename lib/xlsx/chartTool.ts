@@ -79,7 +79,9 @@ export class ChartTool {
         // delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:layout']
 
         //deleta extra 'dd' in line template
-        delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:catAx']?.['c:title']?.['c:tx']['c:rich']['a:p']['a:r']['a:t']
+        if (readChart['c:chartSpace']['c:chart']['c:plotArea']['c:catAx']?.['c:title']?.['c:tx']['c:rich']['a:p']['a:r']['a:t']) {
+            readChart['c:chartSpace']['c:chart']['c:plotArea']['c:catAx']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = ''
+        } 
 
         for (let i = firstRow; i < parseInt(rowNum); i++) {
             const data = JSON.parse(JSON.stringify(ser));
