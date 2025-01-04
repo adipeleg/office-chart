@@ -39,7 +39,7 @@ class ChartTool {
             }
         };
         this.buildChart = (readChart, opt, sheetName) => {
-            var _a, _b;
+            var _a, _b, _c, _d;
             sheetName = `'${sheetName}'`;
             readChart['c:chartSpace']['c:chart']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = opt.title.name;
             if (opt.title.color) {
@@ -50,6 +50,7 @@ class ChartTool {
             }
             const chartType = `c:${opt.type}Chart`;
             let rowNum = '';
+            let firstRow = 1;
             let lastCol = '';
             let firstCol = '';
             try {
@@ -58,6 +59,9 @@ class ChartTool {
                     const notNumCheck = isNaN(parseInt(letter));
                     if (notNumCheck) {
                         firstCol += letter;
+                    }
+                    else {
+                        firstRow = parseInt(letter);
                     }
                 });
                 Array.from(splitRange[1]).forEach(letter => {
@@ -70,20 +74,25 @@ class ChartTool {
                     }
                 });
             }
-            catch (_c) {
+            catch (_e) {
                 console.log('range is not right');
                 throw Error('range is not right');
             }
             const ser = Object.assign({}, readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser']);
             readChart['c:chartSpace']['c:chart']['c:plotArea'][chartType]['c:ser'] = [];
             // delete readChart['c:chartSpace']['c:chart']['c:plotArea']['c:layout']
-            for (let i = 1; i < parseInt(rowNum); i++) {
+            //deleta extra 'dd' in line template
+            if ((_b = (_a = readChart['c:chartSpace']['c:chart']['c:plotArea']['c:catAx']) === null || _a === void 0 ? void 0 : _a['c:title']) === null || _b === void 0 ? void 0 : _b['c:tx']['c:rich']['a:p']['a:r']['a:t']) {
+                readChart['c:chartSpace']['c:chart']['c:plotArea']['c:catAx']['c:title']['c:tx']['c:rich']['a:p']['a:r']['a:t'] = '';
+            }
+            for (let i = firstRow; i < parseInt(rowNum); i++) {
                 const data = JSON.parse(JSON.stringify(ser));
                 let d = data[0] || data;
                 d['c:idx'] = { $: { val: i - 1 } };
                 d['c:order'] = { $: { val: i - 1 } };
                 if (opt.type !== 'scatter') {
-                    d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$1:$${lastCol}$1`;
+                    // default use 1 row for x axis
+                    d['c:cat']['c:strRef']['c:f'] = sheetName + `!$${firstCol}$${firstRow}:$${lastCol}$${firstRow} `;
                     d['c:val']['c:numRef']['c:f'] = sheetName + `!$${firstCol}$${(i + 1)}:$${lastCol}$${(i + 1)}`;
                     if (opt.hasOwnProperty('data')) {
                         d['c:cat']['c:strRef']['c:strCache'] = this.buildCache(opt['data'][0], opt.labels);
@@ -110,8 +119,8 @@ class ChartTool {
                     d['c:spPr']['a:ln'].$.w = opt.lineWidth || 30000;
                 }
                 if (d['c:marker'] && (opt === null || opt === void 0 ? void 0 : opt.marker) && (opt.type === 'line')) {
-                    d['c:marker']['c:size'].$.val = ((_a = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _a === void 0 ? void 0 : _a.size) || '4';
-                    d['c:marker']['c:symbol'].$.val = ((_b = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _b === void 0 ? void 0 : _b.shape) || 'circle';
+                    d['c:marker']['c:size'].$.val = ((_c = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _c === void 0 ? void 0 : _c.size) || '4';
+                    d['c:marker']['c:symbol'].$.val = ((_d = opt === null || opt === void 0 ? void 0 : opt.marker) === null || _d === void 0 ? void 0 : _d.shape) || 'circle';
                     delete d['c:marker']['c:spPr']['a:noFill'];
                     if (opt.rgbColors && opt.rgbColors[i - 1]) {
                         d['c:marker']['c:spPr']['a:solidFill'] = { 'a:srgbClr': { $: { val: opt.rgbColors[i - 1] } } };
@@ -121,7 +130,7 @@ class ChartTool {
                 if (opt.labels) {
                     d['c:tx'] = {
                         'c:strRef': {
-                            'c:f': sheetName + `!$A$${i + 1}`
+                            'c:f': sheetName + `!$${String.fromCharCode(firstCol.charCodeAt(0) - 1)}$${i + 1}`
                         }
                     };
                     if (opt.hasOwnProperty('data')) {
